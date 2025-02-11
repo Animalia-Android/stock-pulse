@@ -19,3 +19,9 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.hover\\:bg-gray-700:hover {
+  background-color: #374151;
+  transition: all 0.2s ease-in-out;
+  transform: scale(1.05);
+}

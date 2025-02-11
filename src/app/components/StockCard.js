@@ -9,7 +9,7 @@ const StockCard = ({ symbol, stock, toggleWatchlist, isInWatchlist }) => {
   const changeIcon = priceChange > 0 ? '🔺' : '🔻';
 
   return (
-    <div className="bg-stockDark p-6 rounded-lg shadow-lg w-full sm:w-[280px] text-center text-white border border-gray-700 hover:border-stockGold transition-all">
+    <div className="bg-stockDark p-6 rounded-lg shadow-lg w-full sm:w-[220px] text-center text-white border border-gray-700 hover:border-stockGold transition-all">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold">{symbol}</h2>
         <button
