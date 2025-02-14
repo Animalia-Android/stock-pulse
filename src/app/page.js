@@ -16,7 +16,7 @@ export default function Home() {
         <NavBar />
 
         <div className="pt-20 px-6">
-          {/* ✅ Render the selected page */}
+          {/* Render the selected page */}
           {currentPage === 'dashboard' && <Dashboard />}
           {currentPage === 'market' && <MarketOverview />}
         </div>

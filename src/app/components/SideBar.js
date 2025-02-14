@@ -11,7 +11,7 @@ import {
 const SideBar = ({ setCurrentPage }) => {
   const [isOpen, setIsOpen] = useState(true);
 
-  // ✅ Load sidebar state from localStorage when the component mounts
+  //Load sidebar state from localStorage when the component mounts
   useEffect(() => {
     const storedState = localStorage.getItem('sidebarOpen');
     if (storedState !== null) {
@@ -19,7 +19,7 @@ const SideBar = ({ setCurrentPage }) => {
     }
   }, []);
 
-  // ✅ Save sidebar state to localStorage whenever it changes
+  //Save sidebar state to localStorage whenever it changes
   const toggleSidebar = () => {
     const newState = !isOpen;
     setIsOpen(newState);
