@@ -1,0 +1,100 @@
+{
+  "AAPL": {
+    "data": {
+      "name": "AAPL",
+      "symbol": "AAPL",
+      "price": 235.74,
+      "change": -0.19,
+      "percentChange": -0.0805,
+      "open": 235.42,
+      "high": 236.55,
+      "low": 229.23,
+      "previousClose": 235.93
+    },
+    "timestamp": 1741231583231
+  },
+  "TSLA": {
+    "data": {
+      "name": "TSLA",
+      "symbol": "TSLA",
+      "price": 279.1,
+      "change": 7.06,
+      "percentChange": 2.5952,
+      "open": 272.92,
+      "high": 279.55,
+      "low": 267.71,
+      "previousClose": 272.04
+    },
+    "timestamp": 1741230084994
+  },
+  "GOOG": {
+    "data": {
+      "name": "GOOG",
+      "symbol": "GOOG",
+      "price": 174.99,
+      "change": 2.38,
+      "percentChange": 1.3788,
+      "open": 172.32,
+      "high": 175.75,
+      "low": 170.93,
+      "previousClose": 172.61
+    },
+    "timestamp": 1741230122339
+  },
+  "T": {
+    "data": {
+      "name": "T",
+      "symbol": "T",
+      "price": 26.18,
+      "change": -0.04,
+      "percentChange": -0.1526,
+      "open": 26.065,
+      "high": 26.39,
+      "low": 25.83,
+      "previousClose": 26.22
+    },
+    "timestamp": 1741230133807
+  },
+  "FOUR": {
+    "data": {
+      "name": "FOUR",
+      "symbol": "FOUR",
+      "price": 94.63,
+      "change": 1.03,
+      "percentChange": 1.1004,
+      "open": 93.31,
+      "high": 95.17,
+      "low": 91.795,
+      "previousClose": 93.6
+    },
+    "timestamp": 1741230138228
+  },
+  "SQ": {
+    "data": {
+      "name": "SQ",
+      "symbol": "SQ",
+      "price": 61.12,
+      "change": 1.69,
+      "percentChange": 2.8437,
+      "open": 59.8,
+      "high": 61.65,
+      "low": 59.43,
+      "previousClose": 59.43
+    },
+    "timestamp": 1741230164053
+  },
+  "AMZN": {
+    "data": {
+      "name": "AMZN",
+      "symbol": "AMZN",
+      "price": 208.36,
+      "change": 4.56,
+      "percentChange": 2.2375,
+      "open": 204.8,
+      "high": 209.98,
+      "low": 203.26,
+      "previousClose": 203.8
+    },
+    "timestamp": 1741230171068
+  }
+}
