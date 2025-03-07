@@ -3,15 +3,15 @@
     "data": {
       "name": "AAPL",
       "symbol": "AAPL",
-      "price": 235.74,
-      "change": -0.19,
-      "percentChange": -0.0805,
-      "open": 235.42,
-      "high": 236.55,
-      "low": 229.23,
-      "previousClose": 235.93
+      "price": 235.33,
+      "change": -0.41,
+      "percentChange": -0.1739,
+      "open": 234.435,
+      "high": 237.86,
+      "low": 233.1581,
+      "previousClose": 235.74
     },
-    "timestamp": 1741231583231
+    "timestamp": 1741319317887
   },
   "TSLA": {
     "data": {
