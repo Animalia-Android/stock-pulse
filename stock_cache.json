@@ -3,29 +3,29 @@
     "data": {
       "name": "AAPL",
       "symbol": "AAPL",
-      "price": 235.33,
-      "change": -0.41,
-      "percentChange": -0.1739,
-      "open": 234.435,
-      "high": 237.86,
-      "low": 233.1581,
-      "previousClose": 235.74
+      "price": 214,
+      "change": 0.51,
+      "percentChange": 0.2389,
+      "open": 213.31,
+      "high": 215.22,
+      "low": 209.97,
+      "previousClose": 213.49
     },
-    "timestamp": 1741319317887
+    "timestamp": 1742260985006
   },
   "TSLA": {
     "data": {
       "name": "TSLA",
       "symbol": "TSLA",
-      "price": 279.1,
-      "change": 7.06,
-      "percentChange": 2.5952,
-      "open": 272.92,
-      "high": 279.55,
-      "low": 267.71,
-      "previousClose": 272.04
+      "price": 262.67,
+      "change": -0.78,
+      "percentChange": -0.2961,
+      "open": 259.32,
+      "high": 266.2499,
+      "low": 250.73,
+      "previousClose": 263.45
     },
-    "timestamp": 1741230084994
+    "timestamp": 1741408426554
   },
   "GOOG": {
     "data": {
@@ -59,15 +59,15 @@
     "data": {
       "name": "FOUR",
       "symbol": "FOUR",
-      "price": 94.63,
-      "change": 1.03,
-      "percentChange": 1.1004,
-      "open": 93.31,
-      "high": 95.17,
-      "low": 91.795,
-      "previousClose": 93.6
+      "price": 89.74,
+      "change": 0.56,
+      "percentChange": 0.6279,
+      "open": 88.41,
+      "high": 91,
+      "low": 86.555,
+      "previousClose": 89.18
     },
-    "timestamp": 1741230138228
+    "timestamp": 1741408429743
   },
   "SQ": {
     "data": {

@@ -1,3 +1,5 @@
+import StockPage from '../stocks/[symbol]/page';
+
 export default function Dashboard() {
   // Placeholder market summary
   const marketSummary = {
@@ -37,6 +39,7 @@ export default function Dashboard() {
         <p className="text-green-400">Top Gainers: {marketSummary.gainers}</p>
         <p className="text-red-400">Top Losers: {marketSummary.losers}</p>
       </div>
+      <StockPage />
     </div>
   );
 }

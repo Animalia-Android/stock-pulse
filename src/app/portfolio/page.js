@@ -1,3 +1,5 @@
+import SingleStock from '../components/SingleStock';
+
 export default function Portfolio() {
   // Placeholder portfolio data
   const portfolioValue = '$52,340.75';
@@ -8,21 +10,21 @@ export default function Portfolio() {
       ticker: 'AAPL',
       name: 'Apple Inc.',
       quantity: 10,
-      value: '$1,856.50',
+      price: '$1,856.50',
       change: '+2.3%',
     },
     {
       ticker: 'TSLA',
       name: 'Tesla Inc.',
       quantity: 5,
-      value: '$1,154.90',
+      price: '$1,154.90',
       change: '-1.2%',
     },
     {
       ticker: 'NVDA',
       name: 'Nvidia Corp.',
       quantity: 8,
-      value: '$6,563.60',
+      price: '$6,563.60',
       change: '+5.8%',
     },
   ];
@@ -50,29 +52,7 @@ export default function Portfolio() {
       <div className="bg-gray-800 p-4 rounded-lg shadow-md">
         <ul>
           {ownedStocks.map((stock) => (
-            <li
-              key={stock.ticker}
-              className="flex justify-between p-2 border-b border-gray-700"
-            >
-              <div>
-                <span className="font-medium">
-                  {stock.name} ({stock.ticker})
-                </span>
-                <p className="text-gray-400 text-sm">Qty: {stock.quantity}</p>
-              </div>
-              <div className="text-right">
-                <p className="font-medium">{stock.value}</p>
-                <p
-                  className={
-                    stock.change.startsWith('+')
-                      ? 'text-green-400'
-                      : 'text-red-400'
-                  }
-                >
-                  {stock.change}
-                </p>
-              </div>
-            </li>
+            <SingleStock key={stock} stock={stock} />
           ))}
         </ul>
       </div>
