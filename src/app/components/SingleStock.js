@@ -1,21 +1,3 @@
-// import React from 'react';
-
-// function SingleStock({ stock }) {
-//   return (
-//     <div
-//       key={stock.ticker}
-//       className="flex justify-between p-2 border-b border-gray-700"
-//     >
-//       <span className="font-medium">
-//         {stock.name} ({stock.ticker})
-//       </span>
-//       <span className={stock.color}>{stock.change}</span>
-//     </div>
-//   );
-// }
-
-// export default SingleStock;
-
 import React from 'react';
 import Link from 'next/link';
 

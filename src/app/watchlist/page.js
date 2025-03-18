@@ -1,3 +1,5 @@
+import SingleStock from '../components/SingleStock';
+
 export default function Watchlist() {
   // Placeholder watchlist data
   const watchlistStocks = [
@@ -46,15 +48,7 @@ export default function Watchlist() {
       <div className="bg-gray-800 p-4 rounded-lg shadow-md">
         <ul>
           {watchlistStocks.map((stock) => (
-            <li
-              key={stock.ticker}
-              className="flex justify-between p-2 border-b border-gray-700"
-            >
-              <span className="font-medium">
-                {stock.name} ({stock.ticker})
-              </span>
-              <span className={stock.color}>{stock.change}</span>
-            </li>
+            <SingleStock key={stock.ticker} stock={stock} />
           ))}
         </ul>
       </div>

@@ -7,7 +7,7 @@ const StockCard = (stockData) => {
         {/* {stockData.name} ({stockData.symbol}) */}
         Stock
       </h1>
-      {/* <p className="text-lg font-semibold">
+      <p className="text-lg font-semibold">
         Price: ${stockData.price.toFixed(2)}
       </p>
       <p className="text-sm text-gray-400">
@@ -18,7 +18,7 @@ const StockCard = (stockData) => {
       <p className="text-sm text-gray-400">Low: ${stockData.low}</p>
       <p className="text-sm text-gray-400">
         Previous Close: ${stockData.previousClose}
-      </p> */}
+      </p>
     </div>
   );
 };
