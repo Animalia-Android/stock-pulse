@@ -11,21 +11,21 @@
       "low": 209.97,
       "previousClose": 213.49
     },
-    "timestamp": 1742261131802
+    "timestamp": 1742262214042
   },
   "TSLA": {
     "data": {
       "name": "TSLA",
       "symbol": "TSLA",
-      "price": 262.67,
-      "change": -0.78,
-      "percentChange": -0.2961,
-      "open": 259.32,
-      "high": 266.2499,
-      "low": 250.73,
-      "previousClose": 263.45
+      "price": 238.01,
+      "change": -11.97,
+      "percentChange": -4.7884,
+      "open": 245.055,
+      "high": 245.4,
+      "low": 232.8,
+      "previousClose": 249.98
     },
-    "timestamp": 1741408426554
+    "timestamp": 1742261414542
   },
   "GOOG": {
     "data": {
@@ -87,14 +87,42 @@
     "data": {
       "name": "AMZN",
       "symbol": "AMZN",
-      "price": 208.36,
-      "change": 4.56,
-      "percentChange": 2.2375,
-      "open": 204.8,
-      "high": 209.98,
-      "low": 203.26,
-      "previousClose": 203.8
+      "price": 195.74,
+      "change": -2.21,
+      "percentChange": -1.1164,
+      "open": 198.77,
+      "high": 199,
+      "low": 194.3247,
+      "previousClose": 197.95
     },
-    "timestamp": 1741230171068
+    "timestamp": 1742261412514
+  },
+  "GOOGL": {
+    "data": {
+      "name": "GOOGL",
+      "symbol": "GOOGL",
+      "price": 164.29,
+      "change": -1.2,
+      "percentChange": -0.7251,
+      "open": 165.03,
+      "high": 166.3,
+      "low": 163.67,
+      "previousClose": 165.49
+    },
+    "timestamp": 1742261977624
+  },
+  "MSFT": {
+    "data": {
+      "name": "MSFT",
+      "symbol": "MSFT",
+      "price": 388.7,
+      "change": 0.14,
+      "percentChange": 0.036,
+      "open": 386.7,
+      "high": 392.705,
+      "low": 385.57,
+      "previousClose": 388.56
+    },
+    "timestamp": 1742261993160
   }
 }

@@ -19,7 +19,9 @@ const StockPage = () => {
       setError('');
 
       try {
-        const response = await fetch(`/api/stocks?symbol=${symbol}`);
+        const response = await fetch(
+          `/api/stocks?symbol=${symbol}&details=true`
+        ); // Add query params if needed
         const data = await response.json();
 
         if (data.error) {
@@ -32,6 +34,7 @@ const StockPage = () => {
         console.error('Error fetching stock data:', error);
         setError('Failed to load stock data');
       }
+
       setLoading(false);
     };
 
@@ -40,7 +43,7 @@ const StockPage = () => {
 
   if (loading) return <div className="text-center p-5">Loading...</div>;
   if (error) return <div className="text-center p-5 text-red-500">{error}</div>;
-
+  console.log('Stock Data :', stockData);
   return (
     <div className="max-w-4xl mx-auto p-6 bg-gray-900 text-white rounded-lg shadow-lg">
       {/* Back Button */}
