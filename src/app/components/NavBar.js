@@ -10,8 +10,6 @@ const NavBar = () => {
 
   return (
     <div className="bg-gray-800 p-4 flex justify-between items-center">
-      <h2 className="text-xl font-bold">Stock Pulse</h2>
-
       {/* Search Bar */}
       <SearchBar />
 

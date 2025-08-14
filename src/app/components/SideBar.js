@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import Image from 'next/image';
 
 const SideBar = () => {
   const [active, setActive] = useState('dashboard');
@@ -53,7 +54,10 @@ const SideBar = () => {
 
   return (
     <div className="w-64 fixed h-screen bg-gray-800 p-4 text-white">
-      <h2 className="text-xl font-bold mb-6">Stock Pulse</h2>
+      <div className="flex items-center justify-center mb-6">
+        <Image src="/stockPulseIcon.png" alt="Icon" width={55} height={55} />
+        <h2 className="text-xl font-bold mb-6 p-2">Stock Pulse</h2>
+      </div>
       <ul className="space-y-3">
         {menuItems.map((item) => (
           <motion.li

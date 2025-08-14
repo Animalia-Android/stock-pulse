@@ -19,7 +19,7 @@ const SearchBar = () => {
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search stock (e.g. AAPL)"
+        placeholder="Search (e.g. AAPL)"
         className="p-2 border border-gray-300 rounded"
       />
       <button
