@@ -1,17 +1,45 @@
 @import 'tailwindcss';
 
+/* ---------- Theme & color system ---------- */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --sp-sidebar-width: 16rem; /* expanded default */
+  --sp-header-height: 3.5rem; /* ~56px header */
+  color-scheme: light dark;
+  --sp-header-height: 3.5rem; /* ~56px */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* App grid: header row + content row; sidebar col + main col */
+.app-grid {
+  display: grid;
+  grid-template-rows: var(--sp-header-height) 1fr;
+  grid-template-columns: var(--sp-sidebar-width) 1fr;
+  min-height: 100dvh;
 }
 
+/* Place children by tag (simple & robust) */
+.app-grid > header {
+  grid-row: 1;
+  grid-column: 1 / -1;
+}
+.app-grid > aside {
+  grid-row: 2;
+  grid-column: 1;
+}
+.app-grid > main {
+  grid-row: 2;
+  grid-column: 2;
+}
+
+/* Keep sidebar visible while page scrolls */
+.sidebar-sticky {
+  position: sticky;
+  top: var(--sp-header-height);
+  height: calc(100dvh - var(--sp-header-height));
+}
+
+/* Dark mode from OS */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -19,12 +47,68 @@
   }
 }
 
+/* Tailwind v4 inline theme tokens */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Base document */
+html,
+body {
+  height: 100%;
+}
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* Prefer your configured font var, fall back cleanly */
+  font-family: var(
+    --font-geist-sans,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    'Noto Sans',
+    'Apple Color Emoji',
+    'Segoe UI Emoji'
+  );
+  margin: 0;
 }
 
+/* Mobile: overlay sidebar → no offset */
+@media (max-width: 768px) {
+  :root {
+    --sp-sidebar-width: 0rem;
+  }
+}
+
+/* ---------- Utilities ---------- */
+/* Hide scrollbars on any .scrollable container (cross-browser) */
+.scrollable {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+}
 .scrollable::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+  display: none;
+} /* Chrome/Safari */
+
+/* App shell that shifts with the sidebar */
+.app-shell {
+  margin-left: var(--sp-sidebar-width);
+  transition: margin-left 180ms ease;
+  min-height: 100dvh;
+}
+
+/* Optional: if you want an offset-aware sticky header */
+.header {
+  height: var(--sp-header-height);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(4px);
 }

@@ -1,10 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Home,
   LineChart,
@@ -14,26 +13,39 @@ import {
   Bell,
   ChevronsLeft,
   ChevronsRight,
-  Paperclip, // Assuming you want to use Paperclip for paper trading
+  Paperclip,
+  Plus,
+  Zap,
 } from 'lucide-react';
 
 export default function SideBar({
-  counts = { watchlist: 5, alerts: 2, positions: 4 },
+  counts = { watchlist: 5, alerts: 2, positions: 4, paperOpen: 0 },
 }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
 
-  // (Optional) persist collapsed state
+  // Publish sidebar width for layout consumption
   useEffect(() => {
-    const saved = localStorage.getItem('sp.sidebar.collapsed');
-    if (saved) setCollapsed(saved === '1');
-  }, []);
-  useEffect(() => {
-    localStorage.setItem('sp.sidebar.collapsed', collapsed ? '1' : '0');
+    const width = collapsed ? '4rem' : '16rem'; // w-16 vs w-64
+    document.documentElement.style.setProperty('--sp-sidebar-width', width);
   }, [collapsed]);
 
-  const items = [
+  const recentSymbols = useMemo(
+    () => ['AAPL', 'NVDA', 'MSFT', 'TSLA', 'AMZN'],
+    []
+  );
+
+  const itemsOverview = [
     { name: 'Dashboard', href: '/dashboard', icon: Home, key: 'dashboard' },
+    {
+      name: 'Market Overview',
+      href: '/market',
+      icon: LineChart,
+      key: 'market',
+    },
+  ];
+
+  const itemsYourHub = [
     {
       name: 'Portfolio',
       href: '/portfolio',
@@ -45,15 +57,8 @@ export default function SideBar({
       name: 'Paper Trading',
       href: '/paper',
       icon: Paperclip,
-      key: 'portfolio',
-      badge: counts.positions,
-    },
-
-    {
-      name: 'Market Overview',
-      href: '/market',
-      icon: LineChart,
-      key: 'market',
+      key: 'paper',
+      badge: counts.paperOpen,
     },
     {
       name: 'Watchlist',
@@ -85,92 +90,194 @@ export default function SideBar({
       aria-label="Primary"
       className={`${
         collapsed ? 'w-16' : 'w-64'
-      } fixed h-screen bg-gray-800 border-r border-gray-700 p-3 text-white flex flex-col`}
+      } h-full bg-gray-800 border-r border-gray-700 p-3 text-white flex flex-col`}
     >
-      {/* Brand + collapse */}
-      <div className="flex items-center justify-between mb-4">
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            className="rounded-sm"
-            src="/stockPulseIcon.png"
-            alt="Stock Pulse"
-            width={collapsed ? 28 : 36}
-            height={collapsed ? 28 : 36}
-            priority
-          />
-          {!collapsed && <span className="text-lg font-bold">Stock Pulse</span>}
-        </Link>
+      {/* Header bar: title + collapse button (anchored, not floating) */}
+      <div className="mb-3 relative flex items-center rounded-lg border border-gray-700 bg-gray-900/60 px-2 py-1.5">
+        {/* centered label */}
+        {!collapsed && (
+          <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 text-[11px] uppercase tracking-wide text-slate-400">
+            Navigation
+          </span>
+        )}
+
+        {/* right-aligned collapse/expand */}
         <button
           onClick={() => setCollapsed((v) => !v)}
-          className="p-2 rounded-lg hover:bg-gray-700 text-slate-300"
+          className="ml-auto p-2 rounded-lg hover:bg-gray-700 text-slate-300"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           title={collapsed ? 'Expand' : 'Collapse'}
         >
           {collapsed ? (
-            <ChevronsRight className="w-4 h-4" />
+            <ChevronsRight className="w-3 h-3" />
           ) : (
             <ChevronsLeft className="w-4 h-4" />
           )}
         </button>
       </div>
 
-      {/* Menu */}
+      {/* Navigation groups */}
       <ul className="space-y-1 flex-1">
-        {items.map((item) => {
-          const active = isActive(item.href);
-          return (
-            <li key={item.key}>
-              <Link
-                href={item.href}
-                aria-current={active ? 'page' : undefined}
-                className={`relative group flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors
-                  ${active ? 'text-white' : 'text-slate-300 hover:text-white'}
-                  ${
-                    active
-                      ? 'bg-gray-700/60 ring-1 ring-emerald-500/30'
-                      : 'hover:bg-gray-700/50'
-                  }
-                `}
-              >
-                <item.icon className="w-4 h-4 shrink-0" />
-                {!collapsed && (
-                  <>
-                    <span className="truncate">{item.name}</span>
-                    {item.badge != null && (
-                      <span className="ml-auto text-xs px-2 py-0.5 rounded bg-gray-700 text-slate-200">
-                        {item.badge}
-                      </span>
-                    )}
-                  </>
-                )}
-                {active && (
-                  <motion.span
-                    layoutId="active-bg"
-                    className="absolute inset-0 -z-10 rounded-lg bg-emerald-500/10"
-                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                  />
-                )}
-              </Link>
-            </li>
-          );
-        })}
+        {!collapsed && <SectionLabel>Overview</SectionLabel>}
+        {itemsOverview.map((item) => (
+          <NavItem
+            key={item.key}
+            item={item}
+            active={isActive(item.href)}
+            collapsed={collapsed}
+          />
+        ))}
+
+        <div className="my-2" />
+
+        {!collapsed && <SectionLabel>Your hub</SectionLabel>}
+        {itemsYourHub.map((item) => (
+          <NavItem
+            key={item.key}
+            item={item}
+            active={isActive(item.href)}
+            collapsed={collapsed}
+          />
+        ))}
       </ul>
 
-      {/* Footer (optional quick link or status) */}
+      {/* Footer hint */}
       <div
         className={`${
           collapsed ? 'px-0' : 'px-2'
         } pt-2 border-t border-gray-700`}
       >
-        {!collapsed ? (
+        {/* {!collapsed ? (
           <p className="text-xs text-slate-400">
             Press <kbd className="px-1 py-0.5 bg-gray-700 rounded">⌘K</kbd> for
             quick search
           </p>
         ) : (
           <p className="text-xs text-center text-slate-400">⌘K</p>
-        )}
+        )} */}
       </div>
+      {/* Quick actions — structured card */}
+      {!collapsed && (
+        <SectionCard title="Quick actions">
+          <div className="grid grid-cols-1 gap-2">
+            <ActionButton
+              href="/paper"
+              icon={<Plus className="w-4 h-4" />}
+              label="New paper order"
+            />
+            <ActionButton
+              href="/alerts"
+              icon={<Zap className="w-4 h-4" />}
+              label="New alert"
+            />
+          </div>
+        </SectionCard>
+      )}
+
+      {/* Recent symbols — structured card */}
+      {!collapsed && (
+        <SectionCard
+          title="Recent symbols"
+          right={
+            <Link
+              href="/watchlist"
+              className="text-[11px] text-emerald-400 hover:underline"
+            >
+              Manage
+            </Link>
+          }
+        >
+          <div className="flex flex-wrap gap-2">
+            {recentSymbols.map((sym) => (
+              <Link
+                key={sym}
+                href={`/stocks/${sym}`}
+                className="text-xs px-2 py-1 rounded border border-gray-700 bg-gray-900/50 hover:bg-gray-700"
+              >
+                {sym}
+              </Link>
+            ))}
+          </div>
+        </SectionCard>
+      )}
     </nav>
+  );
+}
+
+/* ---------- Bits ---------- */
+
+function SectionCard({ title, right, children }) {
+  return (
+    <div className="mb-3 rounded-lg border border-gray-700 bg-gray-900/40 p-2">
+      <div className="mb-2 flex items-center justify-between px-1">
+        <p className="text-[11px] uppercase tracking-wide text-slate-400">
+          {title}
+        </p>
+        {right ?? null}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function SectionLabel({ children }) {
+  return (
+    <li className="px-3 py-1 text-[11px] uppercase tracking-wide text-slate-500">
+      {children}
+    </li>
+  );
+}
+
+function NavItem({ item, active, collapsed }) {
+  return (
+    <li>
+      <Link
+        href={item.href}
+        aria-current={active ? 'page' : undefined}
+        className={`relative group flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors
+          ${active ? 'text-white' : 'text-slate-300 hover:text-white'}
+          ${
+            active
+              ? 'bg-gray-700/60 ring-1 ring-emerald-500/30'
+              : 'hover:bg-gray-700/50'
+          }
+        `}
+        title={collapsed ? item.name : undefined}
+      >
+        <item.icon className="w-4 h-4 shrink-0" />
+        {!collapsed && (
+          <>
+            <span className="truncate">{item.name}</span>
+            {item.badge != null && (
+              <span className="ml-auto text-xs px-2 py-0.5 rounded bg-gray-700 text-slate-200">
+                {item.badge}
+              </span>
+            )}
+          </>
+        )}
+        {active && (
+          <motion.span
+            layoutId="active-bg"
+            className="absolute inset-0 -z-10 rounded-lg bg-emerald-500/10"
+            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+          />
+        )}
+      </Link>
+    </li>
+  );
+}
+
+function ActionButton({ href, icon, label }) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex items-center justify-between gap-2 rounded-lg border border-gray-700 bg-gray-900/50 hover:bg-gray-700 px-2.5 py-1.5 text-xs"
+    >
+      <span className="inline-flex items-center gap-2">
+        {icon}
+        <span>{label}</span>
+      </span>
+      <span className="text-slate-500">→</span>
+    </Link>
   );
 }

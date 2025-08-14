@@ -3,29 +3,29 @@
     "data": {
       "name": "AAPL",
       "symbol": "AAPL",
-      "price": 233.33,
-      "change": 3.68,
-      "percentChange": 1.6024,
-      "open": 231.07,
-      "high": 235,
-      "low": 230.43,
-      "previousClose": 229.65
+      "price": 232.78,
+      "change": -0.55,
+      "percentChange": -0.2357,
+      "open": 234.055,
+      "high": 235.12,
+      "low": 230.85,
+      "previousClose": 233.33
     },
-    "timestamp": 1755132995278
+    "timestamp": 1755209766604
   },
   "TSLA": {
     "data": {
       "name": "TSLA",
       "symbol": "TSLA",
-      "price": 298.26,
-      "change": 13.44,
-      "percentChange": 4.7188,
-      "open": 290.21,
-      "high": 307.04,
-      "low": 290,
-      "previousClose": 284.82
+      "price": 335.58,
+      "change": -3.8,
+      "percentChange": -1.1197,
+      "open": 335.76,
+      "high": 340.4699,
+      "low": 330.4,
+      "previousClose": 339.38
     },
-    "timestamp": 1747005017166
+    "timestamp": 1755209768596
   },
   "GOOG": {
     "data": {
@@ -87,15 +87,15 @@
     "data": {
       "name": "AMZN",
       "symbol": "AMZN",
-      "price": 193.06,
-      "change": 0.98,
-      "percentChange": 0.5102,
-      "open": 193.375,
-      "high": 194.69,
-      "low": 191.16,
-      "previousClose": 192.08
+      "price": 230.98,
+      "change": 6.42,
+      "percentChange": 2.8589,
+      "open": 227.4,
+      "high": 233.11,
+      "low": 227.02,
+      "previousClose": 224.56
     },
-    "timestamp": 1747005036647
+    "timestamp": 1755209769419
   },
   "GOOGL": {
     "data": {
@@ -115,14 +115,28 @@
     "data": {
       "name": "MSFT",
       "symbol": "MSFT",
-      "price": 438.73,
-      "change": 0.56,
-      "percentChange": 0.1278,
-      "open": 440,
-      "high": 440.74,
-      "low": 435.88,
-      "previousClose": 438.17
+      "price": 522.48,
+      "change": 1.9,
+      "percentChange": 0.365,
+      "open": 522.56,
+      "high": 525.9499,
+      "low": 520.14,
+      "previousClose": 520.58
     },
-    "timestamp": 1747005046062
+    "timestamp": 1755209767875
+  },
+  "NVDA": {
+    "data": {
+      "name": "NVDA",
+      "symbol": "NVDA",
+      "price": 182.02,
+      "change": 0.43,
+      "percentChange": 0.2368,
+      "open": 179.75,
+      "high": 183.02,
+      "low": 179.46,
+      "previousClose": 181.59
+    },
+    "timestamp": 1755209767298
   }
 }
