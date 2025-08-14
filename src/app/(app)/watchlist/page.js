@@ -60,7 +60,7 @@
 'use client';
 import { useMemo, useState } from 'react';
 import { LayoutList, LayoutGrid } from 'lucide-react';
-import SingleStock from '../components/SingleStock';
+import SingleStock from '../../components/SingleStock';
 
 export default function Watchlist() {
   // --- Mock data: added series/low/high/pinned (ignored by older SingleStock; useful if you upgraded it)

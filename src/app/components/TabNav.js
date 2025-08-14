@@ -1,4 +1,3 @@
-// app/portfolio/tab-nav.jsx
 'use client';
 
 import Link from 'next/link';

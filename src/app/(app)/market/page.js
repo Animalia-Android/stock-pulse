@@ -162,7 +162,7 @@
 // }
 
 // app/market-overview/page.jsx (or wherever you place it)
-import TopTenStocks from '../components/TopPerformingStocks';
+import TopTenStocks from '../../components/TopPerformingStocks';
 
 export default function MarketOverview() {
   // ---------- Mock data (wire these to APIs later) ----------

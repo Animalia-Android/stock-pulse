@@ -1,4 +1,3 @@
-// app/paper/paperStore.js
 let S;
 const KEY = 'sp.paper.v1';
 
