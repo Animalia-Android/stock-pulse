@@ -9,12 +9,15 @@ const NavBar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
-    <div className="bg-gray-800 p-4 flex justify-between items-center">
-      {/* Search Bar */}
-      <SearchBar />
+    <div className="bg-gray-800 p-4 flex items-center justify-between">
+      <div className="w-1/3 flex items-center">
+        {/* Optional logo or leave empty */}
+      </div>
+      <div className='"w-1/3 flex justify-center"'>
+        <SearchBar />
+      </div>
 
-      {/* Icons (Bell, User, Theme Toggle, Sign In) */}
-      <div className="flex items-center gap-4">
+      <div className="w-1/3 flex justify-end items-center gap-4">
         <Bell className="w-6 h-6 cursor-pointer text-gray-400 hover:text-white" />
         <button onClick={() => setDarkMode(!darkMode)}>
           {darkMode ? (
@@ -24,7 +27,6 @@ const NavBar = () => {
           )}
         </button>
 
-        {/* Sign In / Profile Button */}
         {isLoggedIn ? (
           <User className="w-6 h-6 cursor-pointer text-gray-400 hover:text-white" />
         ) : (
