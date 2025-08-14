@@ -3,29 +3,29 @@
     "data": {
       "name": "AAPL",
       "symbol": "AAPL",
-      "price": 214,
-      "change": 0.51,
-      "percentChange": 0.2389,
-      "open": 213.31,
-      "high": 215.22,
-      "low": 209.97,
-      "previousClose": 213.49
+      "price": 198.53,
+      "change": 1.04,
+      "percentChange": 0.5266,
+      "open": 199,
+      "high": 200.5399,
+      "low": 197.535,
+      "previousClose": 197.49
     },
-    "timestamp": 1742262214042
+    "timestamp": 1747005040561
   },
   "TSLA": {
     "data": {
       "name": "TSLA",
       "symbol": "TSLA",
-      "price": 238.01,
-      "change": -11.97,
-      "percentChange": -4.7884,
-      "open": 245.055,
-      "high": 245.4,
-      "low": 232.8,
-      "previousClose": 249.98
+      "price": 298.26,
+      "change": 13.44,
+      "percentChange": 4.7188,
+      "open": 290.21,
+      "high": 307.04,
+      "low": 290,
+      "previousClose": 284.82
     },
-    "timestamp": 1742261414542
+    "timestamp": 1747005017166
   },
   "GOOG": {
     "data": {
@@ -59,15 +59,15 @@
     "data": {
       "name": "FOUR",
       "symbol": "FOUR",
-      "price": 89.74,
-      "change": 0.56,
-      "percentChange": 0.6279,
-      "open": 88.41,
-      "high": 91,
-      "low": 86.555,
-      "previousClose": 89.18
+      "price": 85.53,
+      "change": 0.1,
+      "percentChange": 0.1171,
+      "open": 85.95,
+      "high": 87.33,
+      "low": 84.97,
+      "previousClose": 85.43
     },
-    "timestamp": 1741408429743
+    "timestamp": 1747005000022
   },
   "SQ": {
     "data": {
@@ -87,42 +87,42 @@
     "data": {
       "name": "AMZN",
       "symbol": "AMZN",
-      "price": 195.74,
-      "change": -2.21,
-      "percentChange": -1.1164,
-      "open": 198.77,
-      "high": 199,
-      "low": 194.3247,
-      "previousClose": 197.95
+      "price": 193.06,
+      "change": 0.98,
+      "percentChange": 0.5102,
+      "open": 193.375,
+      "high": 194.69,
+      "low": 191.16,
+      "previousClose": 192.08
     },
-    "timestamp": 1742261412514
+    "timestamp": 1747005036647
   },
   "GOOGL": {
     "data": {
       "name": "GOOGL",
       "symbol": "GOOGL",
-      "price": 164.29,
-      "change": -1.2,
-      "percentChange": -0.7251,
-      "open": 165.03,
-      "high": 166.3,
-      "low": 163.67,
-      "previousClose": 165.49
+      "price": 201.96,
+      "change": -1.38,
+      "percentChange": -0.6787,
+      "open": 204.13,
+      "high": 204.53,
+      "low": 197.5101,
+      "previousClose": 203.34
     },
-    "timestamp": 1742261977624
+    "timestamp": 1755131430390
   },
   "MSFT": {
     "data": {
       "name": "MSFT",
       "symbol": "MSFT",
-      "price": 388.7,
-      "change": 0.14,
-      "percentChange": 0.036,
-      "open": 386.7,
-      "high": 392.705,
-      "low": 385.57,
-      "previousClose": 388.56
+      "price": 438.73,
+      "change": 0.56,
+      "percentChange": 0.1278,
+      "open": 440,
+      "high": 440.74,
+      "low": 435.88,
+      "previousClose": 438.17
     },
-    "timestamp": 1742261993160
+    "timestamp": 1747005046062
   }
 }

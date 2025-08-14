@@ -8,7 +8,7 @@ function TopTenStocks({ stocks, category }) {
         🔥 Top {category} of the Day
       </h2>
       <div className="bg-gray-800 p-4 rounded-lg shadow-md">
-        <ul>
+        <ul className="scrollable max-h-96 overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-transparent scrollbar-track-transparent">
           {stocks.map((stock) => (
             <SingleStock key={stock.ticker} stock={stock} />
           ))}
