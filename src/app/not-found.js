@@ -1,4 +1,3 @@
-// app/not-found.jsx
 import Link from 'next/link';
 
 export default function NotFound() {
@@ -10,10 +9,10 @@ export default function NotFound() {
       </p>
       <div className="mt-4">
         <Link
-          href="/"
+          href="/dashboard"
           className="inline-block px-3 py-2 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-sm"
         >
-          Go home
+          Dashboard
         </Link>
       </div>
     </div>

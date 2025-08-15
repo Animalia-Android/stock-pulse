@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <main className="min-h-[calc(100vh-64px)] bg-gray-900 text-slate-100">
       <div className="max-w-7xl mx-auto px-6 py-16">
-        {/* HERO */}
+        {/* HERO /* ---------- BREAK OFF INTO SEPARATE COMPONENTS ---------- */}
         <section className="text-center">
           <span className="inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full border border-gray-700 bg-gray-800 text-slate-300">
             <Rocket className="w-3.5 h-3.5" />
@@ -66,6 +66,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ---------- BREAK OFF INTO SEPARATE COMPONENTS ---------- */}
         {/* FEATURE GRID (matches dashboard card style) */}
         <section id="features" className="mt-16">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -171,6 +172,8 @@ export default function Home() {
     </main>
   );
 }
+
+/* ---------- BREAK OFF INTO SEPARATE COMPONENTS ---------- */
 
 function FeatureCard({ icon, title, body }) {
   return (

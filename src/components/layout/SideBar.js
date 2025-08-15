@@ -18,11 +18,17 @@ import {
   Zap,
 } from 'lucide-react';
 
+import { useUIStore } from '@/stores/uiStore';
+
 export default function SideBar({
   counts = { watchlist: 5, alerts: 2, positions: 4, paperOpen: 0 },
 }) {
+  const toggleSidebar = useUIStore((s) => s.toggleSidebar);
+  const collapsed = useUIStore((s) => s.sidebarCollapsed);
+
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
+  //old way of keeping state
+  // const [collapsed, setCollapsed] = useState(false);
 
   // Publish sidebar width for layout consumption
   useEffect(() => {
@@ -96,14 +102,14 @@ export default function SideBar({
       <div className="mb-3 relative flex items-center rounded-lg border border-gray-700 bg-gray-900/60 px-2 py-1.5">
         {/* centered label */}
         {!collapsed && (
-          <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 text-[11px] uppercase tracking-wide text-slate-400">
-            Navigation
+          <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 text-[16px] uppercase tracking-wide text-slate-400">
+            Control Bar
           </span>
         )}
 
         {/* right-aligned collapse/expand */}
         <button
-          onClick={() => setCollapsed((v) => !v)}
+          onClick={() => toggleSidebar()}
           className="ml-auto p-2 rounded-lg hover:bg-gray-700 text-slate-300"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           title={collapsed ? 'Expand' : 'Collapse'}
@@ -204,7 +210,7 @@ export default function SideBar({
   );
 }
 
-/* ---------- Bits ---------- */
+/* ---------- BREAK OFF INTO SEPARATE COMPONENTS ---------- */
 
 function SectionCard({ title, right, children }) {
   return (

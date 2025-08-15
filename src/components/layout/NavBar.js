@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Bell, User, Moon, Sun, LogIn, Command } from 'lucide-react';
-import SearchBar from './SearchBar';
+import SearchBar from '../SearchBar';
 import { useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 
@@ -113,6 +113,8 @@ export default function NavBar() {
     </header>
   );
 }
+
+/* ---------- BREAK OFF INTO SEPARATE COMPONENTS ---------- */
 
 /* ---------- tiny bits ---------- */
 

@@ -379,6 +379,7 @@ export default function Settings() {
   );
 }
 
+/* ---------- BREAK OFF INTO SEPARATE COMPONENTS ---------- */
 /* ---------- Small UI primitives (no new deps) ---------- */
 function SectionCard({ title, icon, children }) {
   return (

@@ -1,32 +1,34 @@
-// app/paper/page.jsx
 'use client';
-import { useEffect, useState } from 'react';
-import { getState, placeOrder, resetAccount, computeView } from './paperStore';
-import OrderTicket from './ticket';
+
+import { useEffect, useMemo } from 'react';
+import { usePaperStore } from '@/stores/paperStore';
+import OrderTicket from '@/components/paper/orderTicket';
+import { useBatchQuotes } from '@/lib/market/queries';
 
 export default function Paper() {
-  const [state, setState] = useState(getState());
+  // read store
+  const lots = usePaperStore((s) => s.lots);
+  const orders = usePaperStore((s) => s.orders);
+  const reset = usePaperStore((s) => s.reset);
+  const view = usePaperStore((s) => s.view);
+  const reevaluateOrders = usePaperStore((s) => s.reevaluateOrders);
 
-  // app/paper/page.jsx (add near the poll)
-  useEffect(() => {
-    const id = setInterval(() => {
-      // naive: try filling any WORKING orders against updated quotes
-      const s = getState();
-      s.orders
-        .filter((o) => o.status === 'WORKING')
-        .forEach((o) => {
-          // Re-try with fresh quotes
-          const { placeOrder } = require('./paperStore'); // or export a tryFillAll()
-        });
-    }, 1500);
-    return () => clearInterval(id);
-  }, []);
+  // which symbols to fetch quotes for (open positions + a default)
+  const symbols = useMemo(() => {
+    const set = new Set(lots.map((l) => l.symbol));
+    if (set.size === 0) set.add('AAPL');
+    return Array.from(set);
+  }, [lots]);
 
+  const { data, isLoading } = useBatchQuotes(symbols);
+  const quotesMap = data?.map || {};
+
+  // Re-check any WORKING orders whenever quotes refresh
   useEffect(() => {
-    const id = setInterval(() => setState(getState()), 1000); // poll store
-    return () => clearInterval(id);
-  }, []);
-  const view = computeView(state);
+    if (data) reevaluateOrders(quotesMap);
+  }, [data, quotesMap, reevaluateOrders]);
+
+  const { cash, equity, positions } = view(quotesMap);
 
   return (
     <div className="p-6">
@@ -42,16 +44,13 @@ export default function Paper() {
 
       {/* Top cards */}
       <div className="grid md:grid-cols-3 gap-4 mb-6">
-        <Card label="Equity" value={fmtUSD(view.equity)} />
-        <Card label="Cash" value={fmtUSD(view.cash)} />
-        <Card
+        <Stat label="Equity" value={fmtUSD(equity)} />
+        <Stat label="Cash" value={fmtUSD(cash)} />
+        <Stat
           label="Today P/L"
           value={
-            <span
-              className={view.dayPL >= 0 ? 'text-green-400' : 'text-red-400'}
-            >
-              {view.dayPL >= 0 ? '+' : ''}
-              {fmtUSD(view.dayPL)}
+            <span className={0 >= 0 ? 'text-green-400' : 'text-red-400'}>
+              +{fmtUSD(0)}
             </span>
           }
         />
@@ -59,18 +58,10 @@ export default function Paper() {
 
       {/* Ticket + Reset */}
       <div className="flex items-center justify-between mb-3">
-        <OrderTicket
-          onSubmit={(o) => {
-            placeOrder(o);
-            setState(getState());
-          }}
-        />
+        <OrderTicket initialSymbol="AAPL" />
         <button
           onClick={() => {
-            if (confirm('Reset virtual account?')) {
-              resetAccount();
-              setState(getState());
-            }
+            if (confirm('Reset virtual account?')) reset();
           }}
           className="text-sm px-3 py-2 rounded border border-gray-700 hover:bg-gray-700"
         >
@@ -94,7 +85,7 @@ export default function Paper() {
               </tr>
             </thead>
             <tbody>
-              {view.positions.map((p) => (
+              {positions.map((p) => (
                 <tr key={p.symbol} className="border-b border-gray-700/60">
                   <td className="py-2 font-semibold">{p.symbol}</td>
                   <td>{p.qty.toFixed(4)}</td>
@@ -111,10 +102,12 @@ export default function Paper() {
                   </td>
                 </tr>
               ))}
-              {view.positions.length === 0 && (
+              {!positions.length && (
                 <tr>
                   <td className="py-6 text-slate-400" colSpan={6}>
-                    No positions yet.
+                    {isLoading
+                      ? 'Loading quotes…'
+                      : 'No positions yet. Place a trade above.'}
                   </td>
                 </tr>
               )}
@@ -141,26 +134,23 @@ export default function Paper() {
               </tr>
             </thead>
             <tbody>
-              {state.orders
-                .slice()
-                .reverse()
-                .map((o) => (
-                  <tr key={o.id} className="border-b border-gray-700/60">
-                    <td className="py-2">
-                      {new Date(o.createdAt).toLocaleTimeString()}
-                    </td>
-                    <td>{o.symbol}</td>
-                    <td>{o.side}</td>
-                    <td>{o.type}</td>
-                    <td className="text-right">{o.qty}</td>
-                    <td className="text-right">{o.limitPrice ?? '—'}</td>
-                    <td>{o.status}</td>
-                    <td className="text-right">
-                      {o.avgFillPrice ? fmtUSD(o.avgFillPrice) : '—'}
-                    </td>
-                  </tr>
-                ))}
-              {state.orders.length === 0 && (
+              {orders.map((o) => (
+                <tr key={o.id} className="border-b border-gray-700/60">
+                  <td className="py-2">
+                    {new Date(o.createdAt).toLocaleTimeString()}
+                  </td>
+                  <td>{o.symbol}</td>
+                  <td>{o.side}</td>
+                  <td>{o.type}</td>
+                  <td className="text-right">{o.qty}</td>
+                  <td className="text-right">{o.limitPrice ?? '—'}</td>
+                  <td>{o.status}</td>
+                  <td className="text-right">
+                    {o.avgFillPrice ? fmtUSD(o.avgFillPrice) : '—'}
+                  </td>
+                </tr>
+              ))}
+              {!orders.length && (
                 <tr>
                   <td className="py-6 text-slate-400" colSpan={8}>
                     No orders yet.
@@ -175,7 +165,9 @@ export default function Paper() {
   );
 }
 
-function Card({ label, value }) {
+/* ---------- BREAK OFF INTO SEPARATE COMPONENTS ---------- */
+
+function Stat({ label, value }) {
   return (
     <div className="bg-gray-800 p-4 rounded-lg shadow-md">
       <p className="text-sm text-slate-400">{label}</p>
@@ -183,6 +175,7 @@ function Card({ label, value }) {
     </div>
   );
 }
+
 const fmtUSD = (n) =>
   `$${(n ?? 0).toLocaleString(undefined, {
     minimumFractionDigits: 2,

@@ -1,5 +1,6 @@
 // app/paper/ticket.jsx
 'use client';
+
 import { useState } from 'react';
 
 export default function OrderTicket({ symbol: initial = 'AAPL', onSubmit }) {

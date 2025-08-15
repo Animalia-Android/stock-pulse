@@ -1,5 +1,6 @@
 'use client'; // Needed for Next.js App Router
 
+import { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -11,7 +12,6 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { useState, useEffect } from 'react';
 
 // Register chart components
 ChartJS.register(

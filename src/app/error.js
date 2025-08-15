@@ -1,8 +1,8 @@
 'use client';
 
 export default function Error({ error, reset }) {
-  // Optional: log error to a service here
-  // console.error(error);
+  //log error to a service here
+  console.error(error);
 
   return (
     <div className="p-6">

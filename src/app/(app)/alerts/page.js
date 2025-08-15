@@ -118,6 +118,7 @@ export default function AlertsPage() {
           : r
       )
     );
+
   const duplicateRule = (id) =>
     setRules((rs) => {
       const r = rs.find((x) => x.id === id);
@@ -125,6 +126,7 @@ export default function AlertsPage() {
       const nextId = Math.max(...rs.map((x) => x.id)) + 1;
       return [...rs, { ...r, id: nextId, last: '—', status: 'armed' }];
     });
+
   const deleteRule = (id) => setRules((rs) => rs.filter((r) => r.id !== id));
   const pauseAll = () => setGlobalPaused(true);
   const resumeAll = () => setGlobalPaused(false);
@@ -347,6 +349,8 @@ export default function AlertsPage() {
     </div>
   );
 }
+
+/* ---------- BREAK OFF INTO SEPARATE COMPONENTS ---------- */
 
 function StatCard({ label, value }) {
   return (

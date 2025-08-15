@@ -1,4 +1,4 @@
-import TabNav from '../../components/TabNav';
+import TabNav from '@/components/TabNav';
 
 export default function PortfolioLayout({ children }) {
   return (
