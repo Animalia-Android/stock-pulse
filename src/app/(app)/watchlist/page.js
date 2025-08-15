@@ -1,18 +1,13 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { LayoutList, LayoutGrid } from 'lucide-react';
+import { LayoutList, LayoutGrid, Plus, Trash2 } from 'lucide-react'; // ★ Plus
+
 import SingleStock from '@/components/stock/SingleStock';
 
 import { useWatchlistStore } from '@/stores/watchlistStore';
 
-// Watchlist table
-// const symbols = useWatchlistStore(s => s.symbols);
-// const { data, isLoading } = useBatchQuotes(symbols);
-// data.map is quick; data.map[sym] for O(1)
-
 export default function Watchlist() {
-  // --- Mock data: added series/low/high/pinned (ignored by older SingleStock; useful if you upgraded it)
   const [items, setItems] = useState([
     {
       ticker: 'GOOGL',
@@ -66,22 +61,45 @@ export default function Watchlist() {
     },
   ]);
 
-  //Use the watchlist store
+  // Zustand watchlist store
   const symbols = useWatchlistStore((s) => s.symbols);
+  const meta = useWatchlistStore((s) => s.meta);
   const add = useWatchlistStore((s) => s.add);
   const remove = useWatchlistStore((s) => s.remove);
 
   const [query, setQuery] = useState('');
-  const [sortKey, setSortKey] = useState('pinned'); // pinned | symbol | price | change
+  const [sortKey, setSortKey] = useState('pinned');
   const [compact, setCompact] = useState(false);
-  const [view, setView] = useState('list'); // 'list' | 'grid'
+  const [view, setView] = useState('list');
+
+  // If the store has symbols, build the list from store + your local item data as fallback
+  const sourceList = useMemo(() => {
+    if (!symbols.length) return items;
+
+    const bySym = new Map(items.map((i) => [i.ticker, i]));
+    return symbols.map((sym) => {
+      const fromMock = bySym.get(sym);
+      if (fromMock) return fromMock;
+      // placeholder for newly added symbols so your UI still looks the same
+      return {
+        ticker: sym,
+        name: meta[sym]?.name || sym,
+        price: 0,
+        change: '0.00%',
+        series: [],
+        low: 0,
+        high: 0,
+        pinned: false,
+      };
+    });
+  }, [symbols, items, meta]);
 
   const parsed = useMemo(() => {
     const toNum = (s) =>
       (typeof s === 'number' ? s : parseFloat(String(s).replace(/[+%]/g, ''))) *
       (String(s).trim().startsWith('-') ? -1 : 1);
 
-    let list = items
+    let list = sourceList
       .filter(Boolean)
       .filter(
         (x) =>
@@ -114,7 +132,7 @@ export default function Watchlist() {
       : '0.00';
 
     return { list, winners, losers, avg };
-  }, [items, query, sortKey]);
+  }, [sourceList, query, sortKey]);
 
   const deltaClass = (val) =>
     String(val).trim().startsWith('+')
@@ -150,6 +168,41 @@ export default function Watchlist() {
               <option value="price">Sort: Price high→low</option>
               <option value="change">Sort: % change high→low</option>
             </select>
+
+            {/* ★ Minimal Add button (prompt-based) */}
+            <button
+              onClick={() => {
+                const raw = prompt('Add symbol (e.g., AAPL)');
+                const sym = String(raw || '')
+                  .trim()
+                  .toUpperCase();
+                if (!sym) return;
+                add(sym); // persist in store
+
+                // keep your local UI in sync with a placeholder if it didn’t exist
+                setItems((arr) =>
+                  arr.some((x) => x.ticker === sym)
+                    ? arr
+                    : [
+                        {
+                          ticker: sym,
+                          name: sym,
+                          price: 0,
+                          change: '0.00%',
+                          series: [],
+                          low: 0,
+                          high: 0,
+                          pinned: false,
+                        },
+                        ...arr,
+                      ]
+                );
+              }}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm"
+              title="Add symbol"
+            >
+              <Plus className="w-4 h-4" /> Add New Stock to Follow
+            </button>
           </div>
 
           <div className="flex items-center gap-3">
@@ -216,9 +269,8 @@ export default function Watchlist() {
         <div className="mt-4">
           {view === 'list' ? (
             <>
-              {/* Column header row (for readability) */}
               <div className="hidden md:grid grid-cols-[24px,96px,1fr,auto,96px,64px] px-4 py-2 text-xs text-slate-400 border-b border-gray-700/60">
-                <span /> {/* pin */}
+                <span />
                 <span>Symbol</span>
                 <span>Name</span>
                 <span className="text-right">Price</span>
@@ -229,7 +281,6 @@ export default function Watchlist() {
               <ul className="max-h-[70vh] overflow-y-auto divide-y divide-gray-700/60">
                 {parsed.list.map((stock) => (
                   <li key={stock.ticker}>
-                    {/* If you upgraded SingleStock, these props enhance it; otherwise they’re harmless */}
                     <SingleStock
                       stock={stock}
                       compact={compact}
@@ -243,18 +294,19 @@ export default function Watchlist() {
                         )
                       }
                       onAlert={() => alert(`Create alert for ${stock.ticker}`)}
-                      onRemove={() =>
+                      onRemove={() => {
+                        // ★ tie removal to the store if using it; otherwise fallback to your local mock
+                        if (symbols.length) remove(stock.ticker);
                         setItems((arr) =>
                           arr.filter((x) => x.ticker !== stock.ticker)
-                        )
-                      }
+                        );
+                      }}
                     />
                   </li>
                 ))}
               </ul>
             </>
           ) : (
-            // Grid view: minimal cards (nice for large lists)
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
               {parsed.list.map((s) => (
                 <MiniCard key={s.ticker} s={s} />
@@ -263,7 +315,6 @@ export default function Watchlist() {
           )}
         </div>
 
-        {/* Empty state */}
         {parsed.list.length === 0 && (
           <div className="p-10 text-center text-slate-400">
             No matches. Try a different search.
@@ -274,9 +325,6 @@ export default function Watchlist() {
   );
 }
 
-/* ---------- BREAK OFF INTO SEPARATE COMPONENTS ---------- */
-
-// Small grid card alternative
 function MiniCard({ s }) {
   const up = String(s.change).trim().startsWith('+');
   return (
@@ -295,8 +343,6 @@ function MiniCard({ s }) {
           </p>
         </div>
       </div>
-
-      {/* tiny progress "today vs range" bar (uses low/high if present) */}
       <div className="mt-3">
         <div className="h-1.5 bg-gray-700 rounded">
           <div

@@ -1,17 +1,12 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import StockChart from '@/components/stock/StockChart'; // keep your path
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import {
-  ArrowLeft,
-  Bell,
-  Bookmark,
-  BookmarkCheck,
-  DollarSign,
-  ExternalLink,
-} from 'lucide-react';
+import { ArrowLeft, Bell, DollarSign, ExternalLink } from 'lucide-react';
+
+import StockChart from '@/components/stock/StockChart'; // keep your path
+import AddToWatchlistBtn from '@/components/stock/AddToWatchlistBtn';
 
 // Stock page
 // const { data: details } = useDetails(symbol);
@@ -25,11 +20,12 @@ export default function StockPage() {
   const { symbol } = useParams();
   const router = useRouter();
 
+  // Selectors keep re-renders tight
   const [stockData, setStockData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [range, setRange] = useState('1D'); // 1D, 5D, 1M, 6M, 1Y, 5Y
-  const [watchlisted, setWatchlisted] = useState(false);
+
   const [ticketOpen, setTicketOpen] = useState(false);
 
   useEffect(() => {
@@ -121,17 +117,11 @@ export default function StockPage() {
 
           {/* Right: quick actions */}
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => setWatchlisted((v) => !v)}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-700 hover:bg-gray-700 text-sm"
-            >
-              {watchlisted ? (
-                <BookmarkCheck className="w-4 h-4" />
-              ) : (
-                <Bookmark className="w-4 h-4" />
-              )}
-              {watchlisted ? 'On Watchlist' : 'Add to Watchlist'}
-            </button>
+            <AddToWatchlistBtn
+              symbol={stockData?.symbol}
+              name={stockData?.name}
+            />
+
             <Link
               href={`/alerts?symbol=${encodeURIComponent(symbol)}`}
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-700 hover:bg-gray-700 text-sm"

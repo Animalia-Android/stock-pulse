@@ -1,6 +1,6 @@
 'use client';
 
-import { Star, Bell, X } from 'lucide-react';
+import { Star, Bell, X, Trash2 } from 'lucide-react';
 
 export default function SingleStock({
   stock = {}, // ✅ safe default
@@ -119,7 +119,7 @@ export default function SingleStock({
             title="Remove"
             className="p-1 rounded text-slate-300 hover:bg-gray-700"
           >
-            <X className="w-4 h-4" />
+            <Trash2 className="w-4 h-4" />
           </button>
         </div>
       </div>
