@@ -17,15 +17,15 @@
     "data": {
       "name": "TSLA",
       "symbol": "TSLA",
-      "price": 330.9729,
-      "change": -4.6071,
-      "percentChange": -1.3729,
-      "open": 336.68,
+      "price": 330.56,
+      "change": -5.02,
+      "percentChange": -1.4959,
+      "open": 337.655,
       "high": 339.3,
       "low": 327.02,
       "previousClose": 335.58
     },
-    "timestamp": 1755278934416
+    "timestamp": 1755309828037
   },
   "GOOG": {
     "data": {

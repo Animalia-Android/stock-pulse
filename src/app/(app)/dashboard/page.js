@@ -301,8 +301,8 @@ export default function Dashboard() {
             </div>
             <ul className="mt-2 text-sm text-slate-300 space-y-1">
               {/* <li>• Tech, RSI < 30, Cap > $10B</li>
-      <li>• 52-Week Breakouts, Vol > 1.5×</li>
-      <li>• Value Picks: P/E < 15, Div > 2%</li> */}
+         <li>• 52-Week Breakouts, Vol > 1.5×</li>
+         <li>• Value Picks: P/E < 15, Div > 2%</li> */}
             </ul>
           </a>
         </div>
