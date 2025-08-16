@@ -4,6 +4,7 @@ import { useEffect, useMemo } from 'react';
 import { usePaperStore } from '@/stores/paperStore';
 import OrderTicket from '@/components/paper/orderTicket';
 import { useBatchQuotes } from '@/lib/market/queries';
+import PageLayout from '@/components/layout/PageLayout';
 
 export default function Paper() {
   // read store
@@ -31,17 +32,11 @@ export default function Paper() {
   const { cash, equity, positions } = view(quotesMap);
 
   return (
-    <div className="p-6">
-      <div className="flex items-center gap-2 mb-2">
-        <h1 className="text-2xl font-bold">Paper Trading</h1>
-        <span className="text-xs px-2 py-0.5 rounded bg-emerald-600/20 text-emerald-300">
-          Virtual
-        </span>
-      </div>
-      <p className="mb-4 text-slate-300">
-        Practice with simulated cash. Results are hypothetical.
-      </p>
-
+    <PageLayout
+      title="Paper Trading"
+      description="Practice with simulated cash. Results are hypothetical."
+      virtual={true}
+    >
       {/* Top cards */}
       <div className="grid md:grid-cols-3 gap-4 mb-6">
         <Stat label="Equity" value={fmtUSD(equity)} />
@@ -161,7 +156,7 @@ export default function Paper() {
           </table>
         </div>
       </section>
-    </div>
+    </PageLayout>
   );
 }
 

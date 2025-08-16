@@ -1,3 +1,4 @@
+import PageLayout from '@/components/layout/PageLayout';
 import StockPage from '../stocks/[symbol]/page';
 
 export default function Dashboard() {
@@ -62,12 +63,10 @@ export default function Dashboard() {
 
   // ---- UI ----
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
-      <p className="mb-4 text-slate-300">
-        View your stock portfolio and latest market trends here.
-      </p>
-
+    <PageLayout
+      title="Dashboard"
+      description="View your stock portfolio and latest market trends here."
+    >
       {/* Portfolio Summary */}
       <div className="bg-gray-800 p-4 rounded-lg shadow-md mb-6">
         <h2 className="text-xl font-semibold">📊 Portfolio Overview</h2>
@@ -309,7 +308,7 @@ export default function Dashboard() {
       </div>
 
       {/* Existing deep-dive component */}
-      <StockPage />
-    </div>
+      {/* <StockPage /> */}
+    </PageLayout>
   );
 }

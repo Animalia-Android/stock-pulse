@@ -13,6 +13,7 @@ import {
   Trash2,
   Clock,
 } from 'lucide-react';
+import PageLayout from '@/components/layout/PageLayout';
 
 export default function AlertsPage() {
   // ---- Mock data ----
@@ -133,12 +134,10 @@ export default function AlertsPage() {
 
   // ---- UI ----
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">Alerts</h1>
-      <p className="mb-4 text-slate-300">
-        Create rules, manage channels, and review recent triggers.
-      </p>
-
+    <PageLayout
+      title="Alerts"
+      description="Create rules, manage channels, and review recent triggers."
+    >
       {/* Top bar */}
       <div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
         <div className="flex items-center gap-3 flex-1">
@@ -346,7 +345,7 @@ export default function AlertsPage() {
           </ul>
         </section>
       </div>
-    </div>
+    </PageLayout>
   );
 }
 

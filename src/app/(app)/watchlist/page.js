@@ -6,6 +6,7 @@ import { LayoutList, LayoutGrid, Plus, Trash2 } from 'lucide-react'; // ★ Plus
 import SingleStock from '@/components/stock/SingleStock';
 
 import { useWatchlistStore } from '@/stores/watchlistStore';
+import PageLayout from '@/components/layout/PageLayout';
 
 export default function Watchlist() {
   const [items, setItems] = useState([
@@ -142,12 +143,10 @@ export default function Watchlist() {
       : 'text-slate-300';
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">Your Watchlist</h1>
-      <p className="mb-4 text-slate-300">
-        A collection of stocks you want to watch.
-      </p>
-
+    <PageLayout
+      title="Your Watchlist"
+      description="A collection of stocks you want to watch."
+    >
       <div className="bg-gray-800 p-4 rounded-lg shadow-md">
         {/* Toolbar */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -321,7 +320,7 @@ export default function Watchlist() {
           </div>
         )}
       </div>
-    </div>
+    </PageLayout>
   );
 }
 

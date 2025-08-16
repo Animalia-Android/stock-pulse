@@ -1,3 +1,4 @@
+import PageLayout from '@/components/layout/PageLayout';
 import TopTenStocks from '@/components/stock/TopPerformingStocks';
 
 export default function MarketOverview() {
@@ -262,12 +263,10 @@ export default function MarketOverview() {
 
   // ---------- UI ----------
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">Market Overview</h1>
-      <p className="mb-4 text-slate-300">
-        Macro view of the markets: breadth, sectors, global indices, and more.
-      </p>
-
+    <PageLayout
+      title="Market Overview"
+      description="Macro view of the markets: breadth, sectors, global indices, and more."
+    >
       {/* Global Indices */}
       <h2 className="text-xl font-semibold mb-2">🌍 Global Indices</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -498,6 +497,6 @@ export default function MarketOverview() {
           </div>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }
