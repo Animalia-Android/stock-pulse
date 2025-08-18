@@ -9,6 +9,8 @@ import {
   Calendar,
   FileDown,
 } from 'lucide-react';
+import { deltaClass } from '@/lib/utils/converters/deltaClass';
+import { formatUSD } from '@/lib/utils/converters/numbers';
 
 export default function Portfolio() {
   // --- Mock positions (swap with API later) ---
@@ -123,14 +125,7 @@ export default function Portfolio() {
     };
   }, [positions]);
 
-  // --- Helpers ---
-  const fmtUSD = (n) =>
-    `$${(n ?? 0).toLocaleString(undefined, {
-      maximumFractionDigits: 2,
-      minimumFractionDigits: 2,
-    })}`;
   const fmtPct = (n) => `${(n ?? 0).toFixed(2)}%`;
-  const deltaClass = (v) => (v >= 0 ? 'text-green-400' : 'text-red-400');
 
   // Sparkline path
   const Sparkline = ({ series }) => {
@@ -231,19 +226,19 @@ export default function Portfolio() {
             </button>
           </div>
           <p className="text-3xl font-bold text-green-400 mt-1">
-            {fmtUSD(data.totalMV)}
+            {formatUSD(data.totalMV)}
           </p>
           <div className="mt-1 text-sm">
             <span className={`${deltaClass(data.unrealPL)} font-medium`}>
               {data.unrealPL >= 0 ? '+' : ''}
-              {fmtUSD(data.unrealPL)}
+              {formatUSD(data.unrealPL)}
             </span>
             <span className="text-slate-400"> total P/L</span>
           </div>
           <div className="mt-1 text-sm">
             <span className={`${deltaClass(data.dayPL)} font-medium`}>
               {data.dayPL >= 0 ? '+' : ''}
-              {fmtUSD(data.dayPL)}
+              {formatUSD(data.dayPL)}
             </span>
             <span className="text-slate-400"> today</span>
           </div>
@@ -332,12 +327,14 @@ export default function Portfolio() {
                     <td className="py-2 font-semibold">{p.symbol}</td>
                     <td className="py-2 text-slate-300">{p.name}</td>
                     <td className="py-2 text-right">{p.shares}</td>
-                    <td className="py-2 text-right">{fmtUSD(p.avgCost)}</td>
-                    <td className="py-2 text-right">{fmtUSD(p.price)}</td>
-                    <td className="py-2 text-right">{fmtUSD(p.marketValue)}</td>
+                    <td className="py-2 text-right">{formatUSD(p.avgCost)}</td>
+                    <td className="py-2 text-right">{formatUSD(p.price)}</td>
+                    <td className="py-2 text-right">
+                      {formatUSD(p.marketValue)}
+                    </td>
                     <td className={`py-2 text-right ${deltaClass(pl)}`}>
                       {pl >= 0 ? '+' : ''}
-                      {fmtUSD(pl)}
+                      {formatUSD(pl)}
                     </td>
                     <td className={`py-2 text-right ${deltaClass(plPct)}`}>
                       {plPct >= 0 ? '+' : ''}
@@ -361,7 +358,7 @@ export default function Portfolio() {
                   Total
                 </td>
                 <td className="py-3 text-right font-semibold">
-                  {fmtUSD(data.totalMV)}
+                  {formatUSD(data.totalMV)}
                 </td>
                 <td
                   className={`py-3 text-right font-semibold ${deltaClass(
@@ -369,7 +366,7 @@ export default function Portfolio() {
                   )}`}
                 >
                   {data.unrealPL >= 0 ? '+' : ''}
-                  {fmtUSD(data.unrealPL)}
+                  {formatUSD(data.unrealPL)}
                 </td>
                 <td className="py-3 text-right text-slate-300">—</td>
                 <td
@@ -378,7 +375,7 @@ export default function Portfolio() {
                   )}`}
                 >
                   {data.dayPL >= 0 ? '+' : ''}
-                  {fmtUSD(data.dayPL)}
+                  {formatUSD(data.dayPL)}
                 </td>
               </tr>
             </tfoot>
@@ -410,7 +407,9 @@ export default function Portfolio() {
                     <p className="text-slate-300">
                       Est. ${d.amount.toFixed(2)} / sh
                     </p>
-                    <p className="text-emerald-400">~{fmtUSD(d.estIncome)}</p>
+                    <p className="text-emerald-400">
+                      ~{formatUSD(d.estIncome)}
+                    </p>
                   </div>
                 </li>
               ))}

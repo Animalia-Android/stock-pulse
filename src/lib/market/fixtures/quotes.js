@@ -325,3 +325,57 @@ export const SAMPLE_QUOTES = [
     timestamp: 1713806400,
   },
 ];
+
+export const SAMPLE_INDICES = [
+  { name: 'S&P 500', symbol: '^GSPC', price: '5,567.4', change: '+0.67%' },
+  { name: 'Nasdaq', symbol: '^IXIC', price: '18,245.1', change: '+0.91%' },
+  { name: 'Dow', symbol: '^DJI', price: '40,112.3', change: '-0.12%' },
+  {
+    name: 'Russell 2000',
+    symbol: '^RUT',
+    price: '2,260.8',
+    change: '+0.35%',
+  },
+  { name: 'FTSE 100', symbol: '^FTSE', price: '8,190.2', change: '+0.21%' },
+  { name: 'DAX', symbol: '^GDAXI', price: '18,240.9', change: '-0.18%' },
+  {
+    name: 'Nikkei 225',
+    symbol: '^N225',
+    price: '41,320.6',
+    change: '+0.44%',
+  },
+  { name: 'Hang Seng', symbol: '^HSI', price: '17,980.3', change: '+0.12%' },
+];
+
+export const SAMPLE_MOVERS = {
+  gainers: [
+    { symbol: 'PLTR', change: '+5.9%' },
+    { symbol: 'COIN', change: '+4.1%' },
+    { symbol: 'AMD', change: '+3.6%' },
+  ],
+  losers: [
+    { symbol: 'SNOW', change: '-3.2%' },
+    { symbol: 'RBLX', change: '-2.7%' },
+    { symbol: 'DIS', change: '-1.8%' },
+  ],
+};
+
+export const SAMPLE_BREADTH = {
+  advancers: 3411,
+  decliners: 2488,
+  unchanged: 121,
+};
+
+export const SAMPLE_NEWS = [
+  'Fed speakers hint at data-dependent path into Q4',
+  'Chipmakers rally on strong datacenter demand',
+  'Oil edges higher as inventories tighten',
+];
+
+export const SAMPLE_MARKET = {
+  indices: SAMPLE_INDICES,
+  quotes: SAMPLE_QUOTES,
+  movers: SAMPLE_MOVERS,
+  breadth: SAMPLE_BREADTH,
+  news: SAMPLE_NEWS,
+};

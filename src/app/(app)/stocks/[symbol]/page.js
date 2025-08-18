@@ -7,6 +7,7 @@ import { ArrowLeft, Bell, DollarSign, ExternalLink } from 'lucide-react';
 
 import StockChart from '@/components/stock/StockChart'; // keep your path
 import AddToWatchlistBtn from '@/components/stock/AddToWatchlistBtn';
+import { deltaClass } from '@/lib/utils/converters/deltaClass';
 
 // Stock page
 // const { data: details } = useDetails(symbol);
@@ -63,12 +64,6 @@ export default function StockPage() {
   const price = toNum(stockData?.price);
   const change = toNum(stockData?.change);
   const pct = toNum(stockData?.percentChange);
-  const deltaClass = (v) =>
-    (v ?? 0) > 0
-      ? 'text-emerald-400'
-      : (v ?? 0) < 0
-      ? 'text-red-400'
-      : 'text-slate-300';
 
   if (loading) return <Skeleton />;
   if (error) return <ErrorState error={error} onBack={() => router.back()} />;

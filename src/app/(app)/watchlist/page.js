@@ -135,13 +135,6 @@ export default function Watchlist() {
     return { list, winners, losers, avg };
   }, [sourceList, query, sortKey]);
 
-  const deltaClass = (val) =>
-    String(val).trim().startsWith('+')
-      ? 'text-green-400'
-      : String(val).trim().startsWith('-')
-      ? 'text-red-400'
-      : 'text-slate-300';
-
   return (
     <PageLayout
       title="Your Watchlist"
