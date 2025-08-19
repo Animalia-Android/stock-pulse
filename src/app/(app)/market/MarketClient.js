@@ -7,8 +7,6 @@ import SnapshotCard from '@/components/SnapshotCard';
 import TopTenStocks from '@/components/stock/TopPerformingStocks';
 import IndicesGrid from '@/components/ui/IndicesGrid';
 import VolatilityRatesCard from '@/components/VolatilityRatesCard';
-import { deltaClass } from '@/lib/utils/converters/deltaClass';
-import { widthFromPct } from '@/lib/utils/converters/percent';
 
 export default function MarketClient({ initial }) {
   const {

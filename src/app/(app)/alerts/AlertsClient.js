@@ -11,7 +11,8 @@ import {
   Copy,
   Trash2,
 } from 'lucide-react';
-import { StatCard } from '@/components/stock/StatCard';
+
+import { StatCard } from '@/components/ui/StatCard';
 import { Toggle } from '@/components/controls/Toggle';
 import { formatRuleText } from '@/lib/utils/converters/formatRuleText';
 

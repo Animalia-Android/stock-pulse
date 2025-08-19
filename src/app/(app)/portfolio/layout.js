@@ -1,25 +1,24 @@
+import PageLayout from '@/components/layout/PageLayout';
 import TabNav from '@/components/TabNav';
 
 export default function PortfolioLayout({ children }) {
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">Your Portfolio</h1>
-      <p className="mb-4 text-slate-300">
-        Holdings you own: positions, performance, and activity.
-      </p>
-
+    <PageLayout
+      title="Your Portfolio"
+      description="Holdings you own: P/L, allocation, income, and recent activity."
+    >
       {/* Tabs */}
       <TabNav
         tabs={[
           { label: 'Positions', href: '/portfolio' },
           { label: 'Performance', href: '/portfolio/performance' },
-          { label: 'Transactions', href: '/portfolio/transactions' }, // optional
-          { label: 'Income', href: '/portfolio/income' }, // optional
+          { label: 'Transactions', href: '/portfolio/transactions' },
+          { label: 'Income', href: '/portfolio/income' },
         ]}
       />
 
       {/* Active tab content */}
       <div className="mt-4">{children}</div>
-    </div>
+    </PageLayout>
   );
 }

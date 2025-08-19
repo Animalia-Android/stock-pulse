@@ -1,4 +1,3 @@
-// app/alerts/page.js
 import PageLayout from '@/components/layout/PageLayout';
 import AlertsClient from './AlertsClient';
 

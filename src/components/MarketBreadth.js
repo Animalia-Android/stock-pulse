@@ -9,19 +9,19 @@ export default function MarketBreadth({ breadth }) {
           <div className="bg-gray-900/40 p-3 rounded">
             <p className="text-slate-400">Advancers</p>
             <p className="text-green-400 text-lg font-semibold">
-              {breadth.advancers?.toLocaleString()}
+              {breadth.advancers?.toLocaleString('en-US')}
             </p>
           </div>
           <div className="bg-gray-900/40 p-3 rounded">
             <p className="text-slate-400">Decliners</p>
             <p className="text-red-400 text-lg font-semibold">
-              {breadth.decliners?.toLocaleString()}
+              {breadth.decliners?.toLocaleString('en-US')}
             </p>
           </div>
           <div className="bg-gray-900/40 p-3 rounded">
             <p className="text-slate-400">Unchanged</p>
             <p className="text-slate-300 text-lg font-semibold">
-              {breadth.unchanged?.toLocaleString()}
+              {breadth.unchanged?.toLocaleString('en-US')}
             </p>
           </div>
         </div>

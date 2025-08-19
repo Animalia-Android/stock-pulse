@@ -1,4 +1,4 @@
-'use client'; // Needed for Next.js App Router
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
@@ -28,7 +28,6 @@ const StockChart = ({ symbol }) => {
   const [chartData, setChartData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  console.log('Finnhub API Key:', process.env.NEXT_PUBLIC_FINNHUB_API_KEY);
   useEffect(() => {
     if (!symbol) return;
 
@@ -40,6 +39,8 @@ const StockChart = ({ symbol }) => {
         const API_KEY = process.env.NEXT_PUBLIC_FINNHUB_API_KEY;
         const API_URL = `https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=D&count=30&token=${API_KEY}`;
 
+        console.log('Finnhub API Key:', API_KEY);
+        console.log('API URL:', API_URL);
         const response = await fetch(API_URL);
         const data = await response.json();
 
