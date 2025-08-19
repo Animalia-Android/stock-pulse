@@ -1,4 +1,3 @@
-// app/watchlist/WatchlistClient.jsx
 'use client';
 
 import { useMemo, useState } from 'react';

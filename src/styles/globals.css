@@ -1,13 +1,64 @@
 @import 'tailwindcss';
 
-/* ---------- Theme & color system ---------- */
+/* ---------- Theme & layout vars ---------- */
 :root {
   --background: #ffffff;
   --foreground: #171717;
   --sp-sidebar-width: 16rem; /* expanded default */
   --sp-header-height: 3.5rem; /* ~56px header */
   color-scheme: light dark;
-  --sp-header-height: 3.5rem; /* ~56px */
+}
+
+/* Dark mode from OS */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* Collapsed state (toggle class on <html>) */
+:root.sidebar-collapsed {
+  --sp-sidebar-width: 4rem;
+}
+
+/* Mobile: overlay sidebar → no offset */
+@media (max-width: 768px) {
+  :root {
+    --sp-sidebar-width: 0rem;
+  }
+}
+
+/* Tailwind v4 inline theme tokens */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Base document */
+html,
+body {
+  height: 100%;
+}
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(
+    --font-geist-sans,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    'Noto Sans',
+    'Apple Color Emoji',
+    'Segoe UI Emoji'
+  );
+  margin: 0;
 }
 
 /* App grid: header row + content row; sidebar col + main col */
@@ -16,9 +67,8 @@
   grid-template-rows: var(--sp-header-height) 1fr;
   grid-template-columns: var(--sp-sidebar-width) 1fr;
   min-height: 100dvh;
+  transition: grid-template-columns 180ms ease; /* smooth collapse/expand */
 }
-
-/* Place children by tag (simple & robust) */
 .app-grid > header {
   grid-row: 1;
   grid-column: 1 / -1;
@@ -39,72 +89,16 @@
   height: calc(100dvh - var(--sp-header-height));
 }
 
-/* Dark mode from OS */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-/* Tailwind v4 inline theme tokens */
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-/* Base document */
-html,
-body {
-  height: 100%;
-}
-body {
-  background: var(--background);
-  color: var(--foreground);
-  /* Prefer your configured font var, fall back cleanly */
-  font-family: var(
-    --font-geist-sans,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    Segoe UI,
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    'Noto Sans',
-    'Apple Color Emoji',
-    'Segoe UI Emoji'
-  );
-  margin: 0;
-}
-
-/* Mobile: overlay sidebar → no offset */
-@media (max-width: 768px) {
-  :root {
-    --sp-sidebar-width: 0rem;
-  }
-}
-
-/* ---------- Utilities ---------- */
-/* Hide scrollbars on any .scrollable container (cross-browser) */
+/* Utilities */
 .scrollable {
-  -ms-overflow-style: none; /* IE/Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 .scrollable::-webkit-scrollbar {
   display: none;
-} /* Chrome/Safari */
-
-/* App shell that shifts with the sidebar */
-.app-shell {
-  margin-left: var(--sp-sidebar-width);
-  transition: margin-left 180ms ease;
-  min-height: 100dvh;
 }
 
-/* Optional: if you want an offset-aware sticky header */
+/* Sticky header helper (optional) */
 .header {
   height: var(--sp-header-height);
   position: sticky;

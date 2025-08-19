@@ -1,4 +1,5 @@
 import Link from 'next/link';
+
 import SectionCard from '@/components/ui/SectionCard';
 
 export default function NewsList({ headlines = [] }) {

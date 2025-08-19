@@ -1,4 +1,4 @@
-'use client'; // Needed for App Router
+'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';

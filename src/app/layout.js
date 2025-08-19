@@ -3,6 +3,7 @@ import '@/styles/globals.css';
 import SideBar from '@/components/layout/SideBar';
 import NavBar from '@/components/layout/NavBar';
 import Providers from './providers';
+import SidebarWidthController from '@/components/layout/SidebarWidthController';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({
@@ -23,16 +24,13 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} bg-stockDark text-white`}
       >
         <Providers>
+          <SidebarWidthController />
+          {/* client-only; toggles .sidebar-collapsed on <html> */}
           <div className="app-grid">
-            {/* Full-width header row */}
             <NavBar />
-
-            {/* Left column under the header (sticky inside the column) */}
             <aside className="hidden md:block sidebar-sticky">
               <SideBar />
             </aside>
-
-            {/* Right column (main content) */}
             <main className="p-6">{children}</main>
           </div>
         </Providers>

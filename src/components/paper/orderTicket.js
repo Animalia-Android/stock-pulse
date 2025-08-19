@@ -1,4 +1,3 @@
-// app/paper/ticket.jsx
 'use client';
 
 import { useState } from 'react';

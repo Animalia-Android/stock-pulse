@@ -1,6 +1,4 @@
-'use client'; // Needed for App Router
-
-import { useState } from 'react';
+'use client';
 
 const UserBalance = ({ balance, currency = 'USD', locale = 'en-US' }) => {
   const formattedBalance = new Intl.NumberFormat(locale, {

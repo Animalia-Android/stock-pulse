@@ -5,7 +5,7 @@ export default function PortfolioLayout({ children }) {
   return (
     <PageLayout
       title="Your Portfolio"
-      description="Holdings you own: P/L, allocation, income, and recent activity."
+      description="Holdings you own: positions, performance, and activity."
     >
       {/* Tabs */}
       <TabNav

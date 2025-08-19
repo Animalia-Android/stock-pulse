@@ -1,5 +1,3 @@
-import React from 'react';
-
 const StockCard = (stockData) => {
   return (
     <div>
