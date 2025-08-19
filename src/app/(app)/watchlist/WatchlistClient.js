@@ -83,32 +83,46 @@ export default function WatchlistClient({ initial = [] }) {
     return s.trim().startsWith('-') ? -Math.abs(n) : Math.abs(n);
   };
 
+  // helpers (coerce safely)
+  const S = (v) => (v == null ? '' : String(v));
+  const L = (v) => S(v).toLowerCase();
+  const cmp = (a, b) => S(a).localeCompare(S(b));
+  const num = (v) =>
+    typeof v === 'number' && Number.isFinite(v) ? v : Number(S(v)) || 0;
+  // parse "+2.5%" / "-3%" / "2.5" / 2.5 into signed number
+  const changeNum = (v) => {
+    if (typeof v === 'number') return v;
+    const s = S(v).trim();
+    const n = parseFloat(s.replace(/[+%]/g, ''));
+    if (!Number.isFinite(n)) return 0;
+    return s.startsWith('-') ? -Math.abs(n) : Math.abs(n);
+  };
+
   const parsed = useMemo(() => {
-    let list = sourceList
-      .filter(Boolean)
+    let list = (Array.isArray(sourceList) ? sourceList : [])
+      .filter((x) => x && typeof x === 'object')
       .filter(
-        (x) =>
-          (x.ticker || '').toLowerCase().includes(query.toLowerCase()) ||
-          (x.name || '').toLowerCase().includes(query.toLowerCase())
+        (x) => L(x.ticker).includes(L(query)) || L(x.name).includes(L(query))
       );
 
     list.sort((a, b) => {
-      if (sortKey === 'pinned')
+      if (sortKey === 'pinned') {
         return (
-          (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) ||
-          a.ticker.localeCompare(b.ticker)
+          (b?.pinned ? 1 : 0) - (a?.pinned ? 1 : 0) || cmp(a?.ticker, b?.ticker)
         );
-      if (sortKey === 'symbol') return a.ticker.localeCompare(b.ticker);
-      if (sortKey === 'price') return (b.price ?? 0) - (a.price ?? 0);
-      if (sortKey === 'change') return toNum(b.change) - toNum(a.change);
+      }
+      if (sortKey === 'symbol') return cmp(a?.ticker, b?.ticker);
+      if (sortKey === 'price') return num(b?.price) - num(a?.price);
+      if (sortKey === 'change')
+        return changeNum(b?.change) - changeNum(a?.change);
       return 0;
     });
 
-    const winners = list.filter((x) => toNum(x.change) > 0).length;
-    const losers = list.filter((x) => toNum(x.change) < 0).length;
+    const winners = list.filter((x) => changeNum(x?.change) > 0).length;
+    const losers = list.filter((x) => changeNum(x?.change) < 0).length;
     const avg = list.length
       ? (
-          list.reduce((acc, x) => acc + toNum(x.change), 0) / list.length
+          list.reduce((acc, x) => acc + changeNum(x?.change), 0) / list.length
         ).toFixed(2)
       : '0.00';
 
