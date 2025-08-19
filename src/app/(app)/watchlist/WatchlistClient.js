@@ -3,57 +3,120 @@
 import { useMemo, useState } from 'react';
 import { LayoutList, LayoutGrid, Plus } from 'lucide-react';
 
-import SingleStock from '@/components/stock/SingleStock';
 import { useWatchlistStore } from '@/stores/watchlistStore';
+
+import SingleStock from '@/components/stock/SingleStock';
 import MiniCard from '@/components/MiniCard';
 import AddStockModal from '@/components/modals/AddStockModal';
 
-export default function WatchlistClient({ initial = [] }) {
-  // Local UI catalogue (your original mock rows)
-  const [items, setItems] = useState(initial);
+/* ---------- small helpers ---------- */
+const S = (v) => (v == null ? '' : String(v));
+const L = (v) => S(v).toLowerCase();
+const U = (v) => S(v).trim().toUpperCase();
+const cmp = (a, b) => S(a).localeCompare(S(b));
+const num = (v) =>
+  typeof v === 'number' && Number.isFinite(v) ? v : Number(S(v)) || 0;
+const changeNum = (v) => {
+  if (typeof v === 'number') return v;
+  const s = S(v).trim();
+  const n = parseFloat(s.replace(/[+%,$\s]/g, ''));
+  if (!Number.isFinite(n)) return 0;
+  return s.startsWith('-') ? -Math.abs(n) : Math.abs(n);
+};
 
-  // Zustand store (optional; guarded if not wired)
-  const symbols = useWatchlistStore?.((s) => s.symbols) ?? [];
+// Make sure every row has good string fields
+const sanitizeRow = (x = {}) => {
+  const rawTicker = Array.isArray(x.ticker) ? x.ticker[0] : x.ticker;
+  const rawName = Array.isArray(x.name) ? x.name[0] : x.name;
+
+  const ticker = U(
+    typeof rawTicker === 'string'
+      ? rawTicker
+      : rawTicker?.ticker ?? rawTicker?.symbol ?? rawTicker
+  );
+
+  // Filter out junk like "[OBJECT OBJECT]"
+  const validTicker =
+    ticker && !/^\[object\sObject\]$/i.test(ticker) ? ticker : '';
+
+  return {
+    ticker: validTicker,
+    name:
+      S(
+        typeof rawName === 'string'
+          ? rawName
+          : rawName?.name ?? rawName?.company ?? rawName
+      ) || validTicker,
+    price: num(x.price),
+    change: S(x.change ?? '0'),
+    series: Array.isArray(x.series) ? x.series : [],
+    low: num(x.low),
+    high: num(x.high),
+    pinned: !!x.pinned,
+  };
+};
+
+// Accept many shapes from the store and yield an array of tickers (strings)
+const normalizeSymbols = (value) => {
+  let arr = [];
+
+  if (Array.isArray(value)) {
+    arr = value;
+  } else if (value && typeof value === 'object') {
+    // Set / Map / Record guards
+    if (typeof value.values === 'function') {
+      arr = Array.from(value.values());
+    } else if (Array.isArray(value.items)) {
+      arr = value.items;
+    } else {
+      // record → use keys as a fallback
+      arr = Object.keys(value);
+    }
+  } else if (typeof value === 'string') {
+    // persisted JSON string?
+    try {
+      const parsed = JSON.parse(value);
+      if (Array.isArray(parsed)) arr = parsed;
+    } catch {
+      // ignore
+    }
+  }
+
+  // Convert to uppercased tickers
+  const res = arr
+    .map((x) =>
+      typeof x === 'string'
+        ? U(x)
+        : U(x?.ticker ?? x?.symbol ?? (typeof x === 'object' ? '' : x))
+    )
+    .filter(Boolean)
+    .filter((t) => !/^\[object\sObject\]$/i.test(t)); // drop junk
+
+  // Dedupe
+  return Array.from(new Set(res));
+};
+
+export default function WatchlistClient({ initial = [] }) {
+  // Local UI catalogue (original mock rows)
+  const [items, setItems] = useState(() => initial.map(sanitizeRow));
+
+  // Zustand store (guarded)
+  const symbolsRaw = useWatchlistStore?.((s) => s.symbols) ?? [];
   const meta = useWatchlistStore?.((s) => s.meta) ?? {};
   const add = useWatchlistStore?.((s) => s.add);
   const remove = useWatchlistStore?.((s) => s.remove);
+
+  // Normalized symbol order from the store (robust to any shape)
+  const symOrder = useMemo(() => normalizeSymbols(symbolsRaw), [symbolsRaw]);
 
   // UI state
   const [query, setQuery] = useState('');
   const [sortKey, setSortKey] = useState('pinned'); // pinned | symbol | price | change
   const [compact, setCompact] = useState(false);
   const [view, setView] = useState('list'); // list | grid
-
-  // NEW: modal open state
   const [showAdd, setShowAdd] = useState(false);
-  console.log('Watchlist Items before useMemo:', items);
 
-  // % parsing that works for strings and numbers
-  const toNum = (v) => {
-    if (typeof v === 'number') return v;
-    const s = String(v ?? '');
-    const n = parseFloat(s.replace(/[+%,$\s]/g, ''));
-    if (!Number.isFinite(n)) return 0;
-    return s.trim().startsWith('-') ? -Math.abs(n) : Math.abs(n);
-  };
-
-  // helpers (coerce safely)
-  const S = (v) => (v == null ? '' : String(v));
-  const L = (v) => S(v).toLowerCase();
-  const Uppercase = (v) => S(v).trim().toUpperCase();
-  const cmp = (a, b) => S(a).localeCompare(S(b));
-  const num = (v) =>
-    typeof v === 'number' && Number.isFinite(v) ? v : Number(S(v)) || 0;
-
-  const changeNum = (v) => {
-    if (typeof v === 'number') return v;
-    const s = S(v).trim();
-    const n = parseFloat(s.replace(/[+%,$\s]/g, ''));
-    if (!Number.isFinite(n)) return 0;
-    return s.startsWith('-') ? -Math.abs(n) : Math.abs(n);
-  };
-
-  // Suggestions list (items + store symbols + a few common names)
+  // Suggestions (dedup)
   const suggestions = useMemo(() => {
     const base = [
       { symbol: 'AAPL', name: 'Apple Inc.' },
@@ -67,76 +130,77 @@ export default function WatchlistClient({ initial = [] }) {
       { symbol: 'NFLX', name: 'Netflix Inc.' },
       { symbol: 'COIN', name: 'Coinbase Global Inc.' },
     ];
-    const fromItems = items.map((i) => ({
-      symbol: Uppercase(i.ticker),
-      name: i.name,
+    const fromItems = items
+      .map(sanitizeRow)
+      .filter((r) => r.ticker)
+      .map((i) => ({ symbol: i.ticker, name: i.name }));
+    const fromStore = symOrder.map((sym) => ({
+      symbol: sym,
+      name: meta?.[sym]?.name || sym,
     }));
-    console.log('fromItems Items In useMemo:', items);
 
-    const fromStore = (Array.isArray(symbols) ? symbols : []).map((sym) => {
-      const key = Uppercase(sym);
-      return { symbol: key, name: meta?.[key]?.name || key };
-    });
     const all = [...base, ...fromItems, ...fromStore];
     const seen = new Set();
     return all.filter((s) =>
-      seen.has(Uppercase(s.symbol))
-        ? false
-        : (seen.add(Uppercase(s.symbol)), true)
+      seen.has(U(s.symbol)) ? false : (seen.add(U(s.symbol)), true)
     );
-  }, [items, symbols, meta]);
+  }, [items, symOrder, meta]);
 
-  // Build display list: prefer store order if present; otherwise use local items
+  // Build the list we actually show
   const sourceList = useMemo(() => {
-    const safeSymbols = Array.isArray(symbols) ? symbols : [];
+    const bySym = new Map(items.map((i) => [i.ticker, sanitizeRow(i)]));
 
-    if (safeSymbols.length === 0) return items;
-    const bySym = new Map(items.map((i) => [Uppercase(i.ticker), i]));
-    return safeSymbols.map((sym) => {
-      const key = Uppercase(sym);
-      const fromMock = bySym.get(key);
+    if (symOrder.length === 0) {
+      // no store yet → just sanitized items
+      return items.map(sanitizeRow).filter((r) => r.ticker);
+    }
 
-      if (fromMock) return fromMock;
-      return {
-        ticker: key,
-        name: meta?.[key]?.name || key,
-        price: 0,
-        change: '0.00%',
-        series: [],
-        low: 0,
-        high: 0,
-        pinned: false,
-      };
-    });
-  }, [symbols, items, meta]);
+    // Build from store order; fall back to placeholder rows if missing
+    return symOrder
+      .map((sym) => {
+        const row = bySym.get(sym);
+        if (row) return row;
+        return sanitizeRow({
+          ticker: sym,
+          name: meta?.[sym]?.name || sym,
+          price: 0,
+          change: '0',
+          series: [],
+          low: 0,
+          high: 0,
+          pinned: false,
+        });
+      })
+      .filter((r) => r.ticker);
+  }, [items, symOrder, meta]);
 
   const parsed = useMemo(() => {
     let list = (Array.isArray(sourceList) ? sourceList : [])
       .filter((x) => x && typeof x === 'object')
+      .map(sanitizeRow)
+      .filter((x) => x.ticker) // drop invalid tickers
       .filter(
         (x) => L(x.ticker).includes(L(query)) || L(x.name).includes(L(query))
       );
 
     list.sort((a, b) => {
-      if (sortKey === 'pinned') {
+      if (sortKey === 'pinned')
         return (
-          (b?.pinned ? 1 : 0) - (a?.pinned ? 1 : 0) ||
-          cmp(Uppercase(a?.ticker), Uppercase(b?.ticker))
+          (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) ||
+          a.ticker.localeCompare(b.ticker)
         );
-      }
-      if (sortKey === 'symbol')
-        return cmp(Uppercase(a?.ticker), Uppercase(b?.ticker));
-      if (sortKey === 'price') return num(b?.price) - num(a?.price);
+      if (sortKey === 'symbol') return a.ticker.localeCompare(b.ticker);
+      if (sortKey === 'price') return num(b.price) - num(a.price);
       if (sortKey === 'change')
-        return changeNum(b?.change) - changeNum(a?.change);
+        return changeNum(b.change) - changeNum(a.change);
       return 0;
     });
 
-    const winners = list.filter((x) => changeNum(x?.change) > 0).length;
-    const losers = list.filter((x) => changeNum(x?.change) < 0).length;
+    const winners = list.filter((x) => changeNum(x.change) > 0).length;
+    const losers = list.filter((x) => changeNum(x.change) < 0).length;
     const avg = list.length
       ? (
-          list.reduce((acc, x) => acc + changeNum(x?.change), 0) / list.length
+          list.reduce((acc, x) => acc + changeNum(x.change), 0) / list.length
         ).toFixed(2)
       : '0.00';
 
@@ -144,66 +208,33 @@ export default function WatchlistClient({ initial = [] }) {
   }, [sourceList, query, sortKey]);
 
   const handleAddSymbol = async (input) => {
-    // Toggle this if you want validation before adding
-    const sym =
-      typeof input === 'string' ? Uppercase(input) : Uppercase(input?.symbol);
-
+    const sym = typeof input === 'string' ? U(input) : U(input?.symbol);
     if (!sym) return;
     if (add) add(sym);
 
     setItems((arr) =>
-      arr.some((x) => x.ticker === sym)
+      arr.some((x) => U(x.ticker) === sym)
         ? arr
         : [
-            {
+            sanitizeRow({
               ticker: sym,
               name: sym,
               price: 0,
-              change: '0.00%',
+              change: '0',
               series: [],
               low: 0,
               high: 0,
               pinned: false,
-            },
-            ...arr,
-          ]
-    );
-  };
-
-  const handleAdd = () => {
-    const raw = prompt('Add symbol (e.g., AAPL)');
-    const sym = Uppercase(raw).trim().toUpperCase();
-    if (!sym) return;
-
-    // Persist to store (if available)
-    if (add) add(sym);
-
-    // Keep local UI catalogue in sync (avoid dupes)
-    setItems((arr) =>
-      arr.some((x) => Uppercase(x.ticker) === sym)
-        ? arr
-        : [
-            {
-              ticker: sym,
-              name: sym,
-              price: 0,
-              change: '0.00%',
-              series: [],
-              low: 0,
-              high: 0,
-              pinned: false,
-            },
+            }),
             ...arr,
           ]
     );
   };
 
   const handleRemove = (ticker) => {
-    const key = Uppercase(ticker);
-
+    const key = U(ticker);
     if (remove) remove(key);
-
-    setItems((arr) => arr.filter((x) => Uppercase(x.ticker !== key)));
+    setItems((arr) => arr.filter((x) => U(x.ticker) !== key));
   };
 
   return (
@@ -228,7 +259,6 @@ export default function WatchlistClient({ initial = [] }) {
             <option value="change">Sort: % change high→low</option>
           </select>
 
-          {/* NEW: open modal */}
           <button
             onClick={() => setShowAdd(true)}
             className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm"
@@ -313,7 +343,7 @@ export default function WatchlistClient({ initial = [] }) {
 
             <ul className="max-h-[70vh] overflow-y-auto divide-y divide-gray-700/60">
               {parsed.list.map((stock) => (
-                <li key={Uppercase(stock.ticker)}>
+                <li key={stock.ticker || crypto.randomUUID()}>
                   <SingleStock
                     stock={stock}
                     compact={compact}
@@ -336,7 +366,7 @@ export default function WatchlistClient({ initial = [] }) {
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
             {parsed.list.map((s) => (
-              <MiniCard key={s.ticker} s={s} />
+              <MiniCard key={s.ticker || crypto.randomUUID()} s={s} />
             ))}
           </div>
         )}
@@ -348,13 +378,15 @@ export default function WatchlistClient({ initial = [] }) {
         </div>
       )}
 
-      {/* Modal mount */}
-      <AddStockModal
-        isOpen={showAdd}
-        onClose={() => setShowAdd(false)}
-        onSubmit={handleAddSymbol}
-        suggestions={suggestions}
-      />
+      {/* Modal */}
+      {showAdd && (
+        <AddStockModal
+          isOpen
+          onClose={() => setShowAdd(false)}
+          onSubmit={handleAddSymbol}
+          suggestions={suggestions}
+        />
+      )}
     </div>
   );
 }
