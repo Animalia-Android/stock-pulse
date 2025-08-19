@@ -26,6 +26,32 @@ export default function WatchlistClient({ initial = [] }) {
 
   // NEW: modal open state
   const [showAdd, setShowAdd] = useState(false);
+  console.log('Watchlist Items before useMemo:', items);
+
+  // % parsing that works for strings and numbers
+  const toNum = (v) => {
+    if (typeof v === 'number') return v;
+    const s = String(v ?? '');
+    const n = parseFloat(s.replace(/[+%,$\s]/g, ''));
+    if (!Number.isFinite(n)) return 0;
+    return s.trim().startsWith('-') ? -Math.abs(n) : Math.abs(n);
+  };
+
+  // helpers (coerce safely)
+  const S = (v) => (v == null ? '' : String(v));
+  const L = (v) => S(v).toLowerCase();
+  const Uppercase = (v) => S(v).trim().toUpperCase();
+  const cmp = (a, b) => S(a).localeCompare(S(b));
+  const num = (v) =>
+    typeof v === 'number' && Number.isFinite(v) ? v : Number(S(v)) || 0;
+
+  const changeNum = (v) => {
+    if (typeof v === 'number') return v;
+    const s = S(v).trim();
+    const n = parseFloat(s.replace(/[+%,$\s]/g, ''));
+    if (!Number.isFinite(n)) return 0;
+    return s.startsWith('-') ? -Math.abs(n) : Math.abs(n);
+  };
 
   // Suggestions list (items + store symbols + a few common names)
   const suggestions = useMemo(() => {
@@ -41,29 +67,39 @@ export default function WatchlistClient({ initial = [] }) {
       { symbol: 'NFLX', name: 'Netflix Inc.' },
       { symbol: 'COIN', name: 'Coinbase Global Inc.' },
     ];
-    const fromItems = items.map((i) => ({ symbol: i.ticker, name: i.name }));
-    const fromStore = symbols.map((sym) => ({
-      symbol: sym,
-      name: meta[sym]?.name || sym,
+    const fromItems = items.map((i) => ({
+      symbol: Uppercase(i.ticker),
+      name: i.name,
     }));
+    console.log('fromItems Items In useMemo:', items);
+
+    const fromStore = (Array.isArray(symbols) ? symbols : []).map((sym) => {
+      const key = Uppercase(sym);
+      return { symbol: key, name: meta?.[key]?.name || key };
+    });
     const all = [...base, ...fromItems, ...fromStore];
     const seen = new Set();
     return all.filter((s) =>
-      seen.has(s.symbol) ? false : (seen.add(s.symbol), true)
+      seen.has(Uppercase(s.symbol))
+        ? false
+        : (seen.add(Uppercase(s.symbol)), true)
     );
   }, [items, symbols, meta]);
 
   // Build display list: prefer store order if present; otherwise use local items
   const sourceList = useMemo(() => {
-    if (!symbols.length) return items;
+    const safeSymbols = Array.isArray(symbols) ? symbols : [];
 
-    const bySym = new Map(items.map((i) => [i.ticker, i]));
-    return symbols.map((sym) => {
-      const fromMock = bySym.get(sym);
+    if (safeSymbols.length === 0) return items;
+    const bySym = new Map(items.map((i) => [Uppercase(i.ticker), i]));
+    return safeSymbols.map((sym) => {
+      const key = Uppercase(sym);
+      const fromMock = bySym.get(key);
+
       if (fromMock) return fromMock;
       return {
-        ticker: sym,
-        name: meta[sym]?.name || sym,
+        ticker: key,
+        name: meta?.[key]?.name || key,
         price: 0,
         change: '0.00%',
         series: [],
@@ -73,30 +109,6 @@ export default function WatchlistClient({ initial = [] }) {
       };
     });
   }, [symbols, items, meta]);
-
-  // % parsing that works for strings and numbers
-  const toNum = (v) => {
-    if (typeof v === 'number') return v;
-    const s = String(v ?? '');
-    const n = parseFloat(s.replace(/[+%,$\s]/g, ''));
-    if (!Number.isFinite(n)) return 0;
-    return s.trim().startsWith('-') ? -Math.abs(n) : Math.abs(n);
-  };
-
-  // helpers (coerce safely)
-  const S = (v) => (v == null ? '' : String(v));
-  const L = (v) => S(v).toLowerCase();
-  const cmp = (a, b) => S(a).localeCompare(S(b));
-  const num = (v) =>
-    typeof v === 'number' && Number.isFinite(v) ? v : Number(S(v)) || 0;
-  // parse "+2.5%" / "-3%" / "2.5" / 2.5 into signed number
-  const changeNum = (v) => {
-    if (typeof v === 'number') return v;
-    const s = S(v).trim();
-    const n = parseFloat(s.replace(/[+%]/g, ''));
-    if (!Number.isFinite(n)) return 0;
-    return s.startsWith('-') ? -Math.abs(n) : Math.abs(n);
-  };
 
   const parsed = useMemo(() => {
     let list = (Array.isArray(sourceList) ? sourceList : [])
@@ -108,10 +120,12 @@ export default function WatchlistClient({ initial = [] }) {
     list.sort((a, b) => {
       if (sortKey === 'pinned') {
         return (
-          (b?.pinned ? 1 : 0) - (a?.pinned ? 1 : 0) || cmp(a?.ticker, b?.ticker)
+          (b?.pinned ? 1 : 0) - (a?.pinned ? 1 : 0) ||
+          cmp(Uppercase(a?.ticker), Uppercase(b?.ticker))
         );
       }
-      if (sortKey === 'symbol') return cmp(a?.ticker, b?.ticker);
+      if (sortKey === 'symbol')
+        return cmp(Uppercase(a?.ticker), Uppercase(b?.ticker));
       if (sortKey === 'price') return num(b?.price) - num(a?.price);
       if (sortKey === 'change')
         return changeNum(b?.change) - changeNum(a?.change);
@@ -129,21 +143,14 @@ export default function WatchlistClient({ initial = [] }) {
     return { list, winners, losers, avg };
   }, [sourceList, query, sortKey]);
 
-  const handleAddSymbol = async (sym) => {
+  const handleAddSymbol = async (input) => {
     // Toggle this if you want validation before adding
-    const VALIDATE = false;
+    const sym =
+      typeof input === 'string' ? Uppercase(input) : Uppercase(input?.symbol);
 
-    if (VALIDATE) {
-      const res = await fetch(`/api/stocks?symbol=${encodeURIComponent(sym)}`);
-      if (!res.ok) {
-        const { error } = await res
-          .json()
-          .catch(() => ({ error: 'Unknown symbol' }));
-        throw new Error(error || 'Unknown symbol');
-      }
-    }
+    if (!sym) return;
+    if (add) add(sym);
 
-    if (add) add(sym); // persist to store if available
     setItems((arr) =>
       arr.some((x) => x.ticker === sym)
         ? arr
@@ -165,9 +172,7 @@ export default function WatchlistClient({ initial = [] }) {
 
   const handleAdd = () => {
     const raw = prompt('Add symbol (e.g., AAPL)');
-    const sym = String(raw || '')
-      .trim()
-      .toUpperCase();
+    const sym = Uppercase(raw).trim().toUpperCase();
     if (!sym) return;
 
     // Persist to store (if available)
@@ -175,7 +180,7 @@ export default function WatchlistClient({ initial = [] }) {
 
     // Keep local UI catalogue in sync (avoid dupes)
     setItems((arr) =>
-      arr.some((x) => x.ticker === sym)
+      arr.some((x) => Uppercase(x.ticker) === sym)
         ? arr
         : [
             {
@@ -194,8 +199,11 @@ export default function WatchlistClient({ initial = [] }) {
   };
 
   const handleRemove = (ticker) => {
-    if (remove) remove(ticker);
-    setItems((arr) => arr.filter((x) => x.ticker !== ticker));
+    const key = Uppercase(ticker);
+
+    if (remove) remove(key);
+
+    setItems((arr) => arr.filter((x) => Uppercase(x.ticker !== key)));
   };
 
   return (
@@ -305,7 +313,7 @@ export default function WatchlistClient({ initial = [] }) {
 
             <ul className="max-h-[70vh] overflow-y-auto divide-y divide-gray-700/60">
               {parsed.list.map((stock) => (
-                <li key={stock.ticker}>
+                <li key={Uppercase(stock.ticker)}>
                   <SingleStock
                     stock={stock}
                     compact={compact}
