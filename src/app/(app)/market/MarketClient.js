@@ -23,6 +23,8 @@ export default function MarketClient({ initial, indices, news, sectors }) {
     topLosers = [],
   } = initial || {};
 
+  console.log('*****sectorPerf:', sectorPerf);
+
   return (
     <>
       {/* Global Indices */}

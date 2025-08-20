@@ -196,6 +196,20 @@ export async function getSectors() {
   return results;
 }
 
+/** General market headlines */
+export async function getGeneralNews(limit = 6) {
+  const items = await fetchJSON('/news', { category: 'general' }).catch(
+    () => []
+  );
+  return (items || []).slice(0, limit).map((n) => ({
+    id: n.id ?? `${n.datetime}-${(n.headline || '').slice(0, 20)}`,
+    headline: n.headline,
+    source: n.source,
+    url: n.url,
+    datetime: n.datetime ? n.datetime * 1000 : null, // ms
+  }));
+}
+
 /** "Market summary" composed from ETF proxies + general news */
 export async function getMarketSummary() {
   // ETF proxies are the most reliable cross-plan symbols

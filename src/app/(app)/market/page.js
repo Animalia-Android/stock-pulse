@@ -11,13 +11,13 @@ export default async function Page() {
 
   const indices = summary?.indices ?? [];
 
-  const sectors = summary;
+  const sectors = summary?.sectors ?? [];
 
   const news = (summary?.news ?? []).map((n) => n.headline);
 
   console.log('Indices:', indices);
   console.log('Sectors:', sectors);
-  // console.log('News:', news);
+  console.log('News:', news);
 
   return (
     <PageLayout
