@@ -21,6 +21,15 @@ export default function DashboardClient({
   alerts,
   news,
 }) {
+  console.log('DashboardClient', {
+    marketSummary,
+    indices,
+    watchlist,
+    movers,
+    upcomingEarnings,
+    alerts,
+    news,
+  });
   return (
     <>
       <PortfolioSummary
@@ -28,7 +37,7 @@ export default function DashboardClient({
         dailyChange={marketSummary.dailyChange}
       />
 
-      <IndicesGrid indices={indices} />
+      <IndicesGrid indices={indices} type="dashboard" />
 
       <MarketSnapshot
         gainers={marketSummary.gainers}

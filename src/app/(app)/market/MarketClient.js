@@ -8,9 +8,10 @@ import TopTenStocks from '@/components/stock/TopPerformingStocks';
 import IndicesGrid from '@/components/ui/IndicesGrid';
 import VolatilityRatesCard from '@/components/VolatilityRatesCard';
 
-export default function MarketClient({ initial }) {
+export default function MarketClient({ initial, indices, news, sectors }) {
   const {
-    globalIndices = [],
+    // globalIndices = indices || [],
+    // news: newsList = news || [],
     sectorPerf = [],
     breadth = {},
     volRates = {},
@@ -25,7 +26,7 @@ export default function MarketClient({ initial }) {
   return (
     <>
       {/* Global Indices */}
-      <IndicesGrid type="🌍 Global Indices" indices={globalIndices} />
+      <IndicesGrid indices={indices} type="global" />
 
       {/* Volatility & Rates + Breadth */}
       <div className="grid md:grid-cols-3 gap-4 mb-6">

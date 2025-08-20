@@ -36,11 +36,9 @@ const StockChart = ({ symbol }) => {
       setError('');
 
       try {
-        const API_KEY = process.env.NEXT_PUBLIC_FINNHUB_API_KEY;
+        const API_KEY = process.env.FINNHUB_API_KEY;
         const API_URL = `https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=D&count=30&token=${API_KEY}`;
 
-        console.log('Finnhub API Key:', API_KEY);
-        console.log('API URL:', API_URL);
         const response = await fetch(API_URL);
         const data = await response.json();
 

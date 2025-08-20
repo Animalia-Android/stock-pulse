@@ -167,19 +167,22 @@ export default function StockPageClient({ symbol, initialData }) {
         <div className="mb-2 flex items-center justify-between">
           <h2 className="text-lg font-semibold">Price Chart</h2>
           <div className="flex items-center gap-1">
-            {['1D', '5D', '1M', '6M', '1Y', '5Y'].map((r) => (
-              <button
-                key={r}
-                onClick={() => setRange(r)}
-                className={`px-2 py-1 text-xs rounded border ${
-                  r === range
-                    ? 'bg-emerald-600 text-white border-emerald-600'
-                    : 'border-gray-700 hover:bg-gray-700'
-                }`}
-              >
-                {r}
-              </button>
-            ))}
+            {['1D', '5D', '1M', '6M', '1Y', '5Y'].map((r, i) => {
+              const key = r + i;
+              return (
+                <button
+                  key={key}
+                  onClick={() => setRange(r)}
+                  className={`px-2 py-1 text-xs rounded border ${
+                    r === range
+                      ? 'bg-emerald-600 text-white border-emerald-600'
+                      : 'border-gray-700 hover:bg-gray-700'
+                  }`}
+                >
+                  {r}
+                </button>
+              );
+            })}
           </div>
         </div>
         <StockChart symbol={symbol} range={range} />
@@ -214,39 +217,50 @@ export default function StockPageClient({ symbol, initialData }) {
       >
         <div className="mb-2 flex items-center justify-between">
           <h2 className="text-lg font-semibold">Latest News</h2>
-          <Link
-            href={`/news?symbol=${encodeURIComponent(symbol)}`}
-            className="text-sm text-emerald-400 hover:underline"
-          >
-            See more
-          </Link>
+          {stockData?.news.length > 0 && (
+            <Link
+              href={`/news?symbol=${encodeURIComponent(symbol)}`}
+              className="text-sm text-emerald-400 hover:underline"
+            >
+              See more
+            </Link>
+          )}
         </div>
         <ul className="space-y-2">
-          {(stockData?.news || []).slice(0, 5).map((n, i) => (
-            <li
-              key={i}
-              className="rounded border border-gray-700/60 hover:bg-gray-700/30"
-            >
-              <a
-                href={n.url || '#'}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-start gap-3 p-3"
+          {(stockData?.news || []).slice(0, 5).map((n, i) => {
+            const key =
+              n.id ??
+              n.url ??
+              `${n.source || 'src'}-${n.datetime || 't'}-${(
+                n.headline || ''
+              ).slice(0, 32)}`;
+
+            return (
+              <li
+                key={key}
+                className="rounded border border-gray-700/60 hover:bg-gray-700/30"
               >
-                <div className="flex-1">
-                  <p className="font-medium leading-snug">
-                    {n.headline || 'Untitled'}{' '}
-                    {n.url && (
-                      <ExternalLink className="inline w-3.5 h-3.5 opacity-60" />
-                    )}
-                  </p>
-                  <p className="text-xs text-slate-400">
-                    {n.source || 'Source'} • {timeAgo(n.datetime)}
-                  </p>
-                </div>
-              </a>
-            </li>
-          ))}
+                <a
+                  href={n.url || '#'}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-start gap-3 p-3"
+                >
+                  <div className="flex-1">
+                    <p className="font-medium leading-snug">
+                      {n.headline || 'Untitled'}{' '}
+                      {n.url && (
+                        <ExternalLink className="inline w-3.5 h-3.5 opacity-60" />
+                      )}
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      {n.source || 'Source'} • {timeAgo(n.datetime)}
+                    </p>
+                  </div>
+                </a>
+              </li>
+            );
+          })}
           {(!stockData?.news || stockData.news.length === 0) && (
             <li className="text-sm text-slate-400">No recent headlines.</li>
           )}
@@ -274,15 +288,19 @@ export default function StockPageClient({ symbol, initialData }) {
         <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
           <h2 className="text-lg font-semibold mb-2">Peers</h2>
           <div className="flex flex-wrap gap-2">
-            {(stockData?.peers || []).slice(0, 10).map((p) => (
-              <Link
-                key={p}
-                href={`/stocks/${p}`}
-                className="text-xs px-2 py-1 rounded border border-gray-700 bg-gray-900/50 hover:bg-gray-700"
-              >
-                {p}
-              </Link>
-            ))}
+            {(stockData?.peers || []).slice(0, 10).map((p, i) => {
+              const key = p + i;
+
+              return (
+                <Link
+                  key={key}
+                  href={`/stocks/${p}`}
+                  className="text-xs px-2 py-1 rounded border border-gray-700 bg-gray-900/50 hover:bg-gray-700"
+                >
+                  {p}
+                </Link>
+              );
+            })}
             {(!stockData?.peers || stockData.peers.length === 0) && (
               <span className="text-sm text-slate-400">No peer data.</span>
             )}
