@@ -23,7 +23,7 @@ export default function NavBar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-700 bg-gray-900/80 backdrop-blur">
-      <div className="h-14 px-3 sm:px-4 flex items-center gap-2">
+      <div className="relative h-14 px-4 sm:px-4 flex items-center gap-4">
         {/* Brand cluster (always visible) */}
         <Link
           href="/"
@@ -53,18 +53,18 @@ export default function NavBar() {
               Virtual
             </span>
           )}
+          {/* <ProviderToggle /> */}
         </div>
 
-        <ProviderToggle />
         {/* Center search */}
-        <div className="flex-1 flex justify-center">
-          <div className="w-full max-w-xl">
+        <div className="flex-1 flex justify-end">
+          <div className=" w-full max-w-xl">
             <SearchBar />
           </div>
         </div>
 
         {/* Right cluster: command, market status, theme, account */}
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="ml-auto flex items-center gap-1 sm:gap-2">
           <IconButton
             aria-label="Command palette"
             title="Search (⌘K)"

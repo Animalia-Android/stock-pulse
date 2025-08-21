@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 
 import { useUIStore } from '@/stores/uiStore';
+import ProviderToggle from '../controls/ProviderToggle';
 
 export default function SideBar({
   counts = { watchlist: 5, alerts: 2, positions: 4, paperOpen: 0 },
@@ -206,6 +207,7 @@ export default function SideBar({
           </div>
         </SectionCard>
       )}
+      <ProviderToggle />
     </nav>
   );
 }
