@@ -1,5 +1,3 @@
-// src/lib/utils/numbers.js
-
 // --- helpers ---------------------------------------------------------------
 const isFiniteNumber = (n) => Number.isFinite(n);
 const toNumber = (n) => Number(n ?? 0);

@@ -1,5 +1,3 @@
-// src/lib/utils/converters/percent.js
-
 /**
  * Convert a percent-like value to a CSS width string, clamped 0–100%.
  * Accepts: "62%", "62", 62, and (optionally) 0.62 as 62% when allowFraction:true

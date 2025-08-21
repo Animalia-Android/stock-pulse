@@ -1,3 +1,5 @@
+//dummy data to use to build out components before hooking up to real API
+
 export const SAMPLE_QUOTES = [
   {
     symbol: 'AAPL',

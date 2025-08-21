@@ -5,31 +5,22 @@ import { getMarketSummary } from '@/lib/market/adapter';
 
 export default async function Page() {
   // Later: fetch live data here (server) and pass to the client.
-  const data = SAMPLE_MARKET_OVERVIEW;
+  const sampleData = SAMPLE_MARKET_OVERVIEW;
 
-  const summary = await getMarketSummary().catch(() => null);
-
-  const indices = summary?.indices ?? [];
-
-  const sectors = summary?.sectors ?? [];
-
-  const news = (summary?.news ?? []).map((n) => n.headline);
-
-  // console.log('Indices:', indices);
-  // console.log('Sectors:', sectors);
-  // console.log('News:', news);
+  let summary = null;
+  try {
+    summary = await getMarketSummary();
+  } catch (e) {
+    // keep the page up even if upstream hiccups
+    summary = { indices: [], sectors: [], news: [] };
+  }
 
   return (
     <PageLayout
       title="Market Overview"
       description="Macro view of the markets: breadth, sectors, global indices, and more."
     >
-      <MarketClient
-        initial={data}
-        indices={indices}
-        news={news}
-        sectors={sectors}
-      />
+      <MarketClient initial={sampleData} summary={summary} />
     </PageLayout>
   );
 }

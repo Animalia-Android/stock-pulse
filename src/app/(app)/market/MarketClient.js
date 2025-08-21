@@ -1,14 +1,14 @@
 'use client';
 
 import HeatMap from '@/components/HeatMap';
-import MarketBreadth from '@/components/MarketBreadth';
+import MarketBreadth from '@/components/market/MarketBreadth';
 import SectorPerformanceCard from '@/components/SectorPerformanceCard';
 import SnapshotCard from '@/components/SnapshotCard';
 import TopTenStocks from '@/components/stock/TopPerformingStocks';
 import IndicesGrid from '@/components/ui/IndicesGrid';
 import VolatilityRatesCard from '@/components/VolatilityRatesCard';
 
-export default function MarketClient({ initial, indices, news, sectors }) {
+export default function MarketClient({ initial, summary }) {
   const {
     // globalIndices = indices || [],
     // news: newsList = news || [],
@@ -22,6 +22,8 @@ export default function MarketClient({ initial, indices, news, sectors }) {
     topGainers = [],
     topLosers = [],
   } = initial || {};
+
+  const { indices = [], news = [], sectors = [] } = summary || {};
 
   return (
     <>

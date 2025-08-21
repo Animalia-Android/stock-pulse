@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-import WatchlistTable from '@/components/WatchlistTable';
+import WatchlistTable from '@/components/watchlist/WatchlistTable';
 import MoversCard from '@/components/MoversCard';
 import AlertsList from '@/components/AlertsList';
 import EarningsList from '@/components/EarningsList';
@@ -12,15 +12,21 @@ import PortfolioSummary from '@/components/ui/PortfolioSummary';
 import IndicesGrid from '@/components/ui/IndicesGrid';
 import MarketSnapshot from '@/components/ui/MarketSnapshot';
 
-export default function DashboardClient({
-  marketSummary,
-  indices,
-  watchlist,
-  movers,
-  upcomingEarnings,
-  alerts,
-  news,
-}) {
+export default function DashboardClient({ data, mockData }) {
+  const { indices = [], sectors = [], news = [] } = data || {};
+  const {
+    marketSummary = {
+      totalPortfolioValue: 0,
+      dailyChange: 0,
+      gainers: [],
+      losers: [],
+    },
+    movers,
+    watchlist = [],
+    upcomingEarnings = [],
+    alerts = [],
+  } = mockData || {};
+
   return (
     <>
       <PortfolioSummary
@@ -59,7 +65,7 @@ export default function DashboardClient({
       <div className="grid md:grid-cols-3 gap-4 mb-6">
         <EarningsList upcoming={upcomingEarnings} />
         <AlertsList alerts={alerts} />
-        <NewsList headlines={news} />
+        {/* <NewsList headlines={news} /> */}
 
         {/* Cards row (unchanged) */}
         <div className="grid md:grid-cols-2 gap-4 mb-6 md:col-span-3">

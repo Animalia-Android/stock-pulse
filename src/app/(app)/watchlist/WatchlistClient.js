@@ -6,7 +6,7 @@ import { LayoutList, LayoutGrid, Plus } from 'lucide-react';
 import { useWatchlistStore } from '@/stores/watchlistStore';
 
 import SingleStock from '@/components/stock/SingleStock';
-import MiniCard from '@/components/MiniCard';
+import MiniCard from '@/components/ui/MiniCard';
 import AddStockModal from '@/components/modals/AddStockModal';
 
 /* ---------- small helpers ---------- */

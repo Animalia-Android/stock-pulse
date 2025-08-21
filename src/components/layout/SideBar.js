@@ -104,7 +104,7 @@ export default function SideBar({
         {/* centered label */}
         {!collapsed && (
           <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 text-[16px] uppercase tracking-wide text-slate-400">
-            Control Bar
+            Trade Desk
           </span>
         )}
 
@@ -153,16 +153,7 @@ export default function SideBar({
         className={`${
           collapsed ? 'px-0' : 'px-2'
         } pt-2 border-t border-gray-700`}
-      >
-        {/* {!collapsed ? (
-          <p className="text-xs text-slate-400">
-            Press <kbd className="px-1 py-0.5 bg-gray-700 rounded">⌘K</kbd> for
-            quick search
-          </p>
-        ) : (
-          <p className="text-xs text-center text-slate-400">⌘K</p>
-        )} */}
-      </div>
+      ></div>
       {/* Quick actions — structured card */}
       {!collapsed && (
         <SectionCard title="Quick actions">
@@ -208,6 +199,14 @@ export default function SideBar({
         </SectionCard>
       )}
       <ProviderToggle />
+      {/* {!collapsed ? (
+        <p className="text-xs text-slate-400">
+          Press <kbd className="px-1 py-0.5 bg-gray-700 rounded">⌘K</kbd> for
+          quick search
+        </p>
+      ) : (
+        <p className="text-xs text-center text-slate-400">⌘K</p>
+      )} */}
     </nav>
   );
 }

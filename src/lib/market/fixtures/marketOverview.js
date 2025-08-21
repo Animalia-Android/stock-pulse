@@ -1,4 +1,4 @@
-// src/lib/sample/marketOverview.js
+//dummy data to use to build out components before hooking up to real API
 
 export const GLOBAL_INDICES = [
   { name: 'S&P 500', symbol: '^GSPC', price: '5,567.4', change: '+0.67%' },

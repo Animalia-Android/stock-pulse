@@ -1,9 +1,11 @@
-import { Geist, Geist_Mono } from 'next/font/google';
-import '@/styles/globals.css';
+import Providers from './providers';
+
 import SideBar from '@/components/layout/SideBar';
 import NavBar from '@/components/layout/NavBar';
-import Providers from './providers';
 import SidebarWidthController from '@/components/layout/SidebarWidthController';
+
+import { Geist, Geist_Mono } from 'next/font/google';
+import '@/styles/globals.css';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({

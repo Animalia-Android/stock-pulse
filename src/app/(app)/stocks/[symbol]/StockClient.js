@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Bell, DollarSign, ExternalLink } from 'lucide-react';
 
 import StockChart from '@/components/stock/StockChart';
-import AddToWatchlistBtn from '@/components/stock/AddToWatchlistBtn';
+import AddToWatchlistBtn from '@/components/watchlist/AddToWatchlistBtn';
 import { deltaClass } from '@/lib/utils/converters/deltaClass';
 
 export default function StockPageClient({ symbol, initialData }) {

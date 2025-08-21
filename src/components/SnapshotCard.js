@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { deltaClass } from '@/lib/utils/converters/deltaClass';
 
 export default function SnapshotCard({ title, data = [] }) {

@@ -1,14 +1,13 @@
-// src/components/IndicesGrid.jsx
+import Card from './Card';
+
 import { deltaClass } from '@/lib/utils/converters/deltaClass';
 import { filterIndices } from '@/lib/market/indicesPresets';
-import Card from './Card';
 
 export default function IndicesGrid({
   type = 'all',
   indices = [],
   layout = 'flat',
 }) {
-  console.log('Rendering IndicesGrid', { type, indices, layout });
   const filtered = filterIndices(indices, type);
   const lgCols =
     filtered.length % 2 === 0 ? 'lg:grid-cols-4' : 'lg:grid-cols-3';
