@@ -15,9 +15,9 @@ export default async function Page() {
 
   const news = (summary?.news ?? []).map((n) => n.headline);
 
-  console.log('Indices:', indices);
-  console.log('Sectors:', sectors);
-  console.log('News:', news);
+  // console.log('Indices:', indices);
+  // console.log('Sectors:', sectors);
+  // console.log('News:', news);
 
   return (
     <PageLayout

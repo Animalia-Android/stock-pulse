@@ -6,6 +6,7 @@ import { Bell, User, Moon, Sun, LogIn, Command } from 'lucide-react';
 import SearchBar from '../SearchBar';
 import { useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import ProviderToggle from '../controls/ProviderToggle';
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -54,6 +55,7 @@ export default function NavBar() {
           )}
         </div>
 
+        <ProviderToggle />
         {/* Center search */}
         <div className="flex-1 flex justify-center">
           <div className="w-full max-w-xl">
@@ -68,6 +70,7 @@ export default function NavBar() {
             title="Search (⌘K)"
             onClick={() => {
               /* open your command palette here */
+              console.log('Open command palette');
             }}
           >
             <Command className="w-5 h-5" />

@@ -5,8 +5,12 @@ import { isMarketOpenET } from '@/lib/market/marketHours';
 
 const json = async (url, opts) => {
   const r = await fetch(url, { cache: 'no-store', ...opts });
-  const data = await r.json();
-  if (!r.ok || data?.error) throw new Error(data?.error || 'Fetch failed');
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok || data?.error) {
+    // include HTTP status in the error message for smarter retries
+    const msg = data?.error || r.statusText || 'Fetch failed';
+    throw new Error(`${r.status} ${msg}`);
+  }
   return data;
 };
 
@@ -20,18 +24,26 @@ export function useQuote(symbol) {
     enabled: !!sym,
     staleTime: 10_000,
     refetchInterval: open ? 10_000 : false,
+    refetchOnWindowFocus: false,
+    retry: (count, err) => {
+      const msg = String(err?.message || '');
+      if (msg.startsWith('429')) return count < 1; // only 1 retry on rate-limit
+      return count < 2; // otherwise be modest
+    },
+    keepPreviousData: true,
   });
 }
 
 /* Batch quotes (watchlist/dashboard) ------------------------- */
 export function useBatchQuotes(symbols = []) {
   const open = isMarketOpenET();
-  const body = JSON.stringify({
-    symbols: symbols.map((s) => String(s).toUpperCase()),
-  });
+
+  const upper = symbols.map((s) => String(s || '').toUpperCase());
+  const body = JSON.stringify({ symbols: upper });
 
   return useQuery({
-    queryKey: ['quotes-batch', symbols.sort().join(',')],
+    // don't mutate caller's array; sort a copy for a stable key
+    queryKey: ['quotes-batch', [...upper].sort().join(',')],
     queryFn: () =>
       json('/api/stocks/batch', {
         method: 'POST',
@@ -45,6 +57,13 @@ export function useBatchQuotes(symbols = []) {
     enabled: symbols.length > 0,
     staleTime: 10_000,
     refetchInterval: open ? 10_000 : false,
+    refetchOnWindowFocus: false,
+    retry: (count, err) => {
+      const msg = String(err?.message || '');
+      if (msg.startsWith('429')) return count < 1;
+      return count < 2;
+    },
+    keepPreviousData: true,
   });
 }
 
@@ -57,6 +76,14 @@ export function useDetails(symbol) {
       json(`/api/stocks?symbol=${encodeURIComponent(sym)}&details=true`),
     enabled: !!sym,
     staleTime: 6 * 60 * 60 * 1000, // 6h
+    refetchOnWindowFocus: false,
+    retry: 1,
+    retry: (count, err) => {
+      const msg = String(err?.message || '');
+      if (msg.startsWith('429')) return count < 1; // 1 retry for rate-limit
+      return count < 2; // otherwise allow 2 tries total
+    },
+    keepPreviousData: true,
   });
 }
 

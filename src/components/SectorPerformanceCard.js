@@ -1,4 +1,5 @@
 import { deltaClass } from '@/lib/utils/converters/deltaClass';
+import { formatDelta } from '@/lib/utils/converters/numbers';
 import { widthFromPct } from '@/lib/utils/converters/percent';
 
 export default function SectorPerformanceCard({ sectorPerf = [] }) {
@@ -7,21 +8,23 @@ export default function SectorPerformanceCard({ sectorPerf = [] }) {
       <h2 className=" text-xl font-semibold mb-2">🧩 Sector Performance</h2>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
         {sectorPerf.map((s) => (
-          <div key={s.sector} className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <div key={s.name} className="bg-gray-800 p-4 rounded-lg shadow-md">
             <div className="flex items-center justify-between">
-              <p className="font-medium">{s.sector}</p>
-              <span className={`text-sm ${deltaClass(s.change)}`}>
-                {s.change}
+              <p className="font-medium">{s.name}</p>
+              <span className={`text-sm ${deltaClass(s.changePct)}`}>
+                {formatDelta(s.changePct, { asPercent: true })}
               </span>
             </div>
             <div className="mt-2 h-2 bg-gray-700 rounded">
               <div
                 className={`h-2 rounded ${
-                  s.change.startsWith('+') ? 'bg-green-500' : 'bg-red-500'
+                  formatDelta(s.changePct).startsWith('+')
+                    ? 'bg-green-500'
+                    : 'bg-red-500'
                 }`}
                 style={{
                   width: widthFromPct(
-                    s.change.replace('+', '').replace('-', '')
+                    formatDelta(s.changePct).replace('+', '').replace('-', '')
                   ),
                 }}
               />

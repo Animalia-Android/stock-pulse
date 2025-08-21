@@ -8,6 +8,7 @@ export default function IndicesGrid({
   indices = [],
   layout = 'flat',
 }) {
+  console.log('Rendering IndicesGrid', { type, indices, layout });
   const filtered = filterIndices(indices, type);
   const lgCols =
     filtered.length % 2 === 0 ? 'lg:grid-cols-4' : 'lg:grid-cols-3';
@@ -23,7 +24,7 @@ export default function IndicesGrid({
         <div className="flex items-baseline justify-between">
           <div>
             <p className="text-sm text-slate-400">{i.name}</p>
-            <p className="text-lg font-semibold">{formatNumber(i.price)}</p>
+            <p className="text-lg font-semibold">{i.price}</p>
           </div>
           <span className={`text-sm font-medium ${deltaClass(num)}`}>
             {pctLabel}

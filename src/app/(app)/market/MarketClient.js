@@ -23,8 +23,6 @@ export default function MarketClient({ initial, indices, news, sectors }) {
     topLosers = [],
   } = initial || {};
 
-  console.log('*****sectorPerf:', sectorPerf);
-
   return (
     <>
       {/* Global Indices */}
@@ -40,7 +38,7 @@ export default function MarketClient({ initial, indices, news, sectors }) {
       </div>
 
       {/* Sector Performance */}
-      <SectorPerformanceCard sectorPerf={sectorPerf} />
+      <SectorPerformanceCard sectorPerf={sectors} />
 
       {/* Futures / Commodities / Crypto / Calendar */}
       <div className="grid lg:grid-cols-4 gap-4 mt-6 mb-6">

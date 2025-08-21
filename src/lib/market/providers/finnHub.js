@@ -1,26 +1,95 @@
+// Finnhub API integration for live market data
+// --------------------------fetchJSON----------------------------
+
+//Simpler fetchJSON function for Finnhub API
+// const API_KEY = process.env.FINNHUB_API_KEY;
+// const BASE = 'https://finnhub.io/api/v1';
+
+// if (!API_KEY) {
+//   // don’t crash prod if you prefer, but it’s helpful in dev
+//   console.warn('FINNHUB_API_KEY is not set. Live market calls will fail.');
+// }
+
+// async function fetchJSON(path, params = {}) {
+//   const url = new URL(BASE + path);
+//   for (const [k, v] of Object.entries(params)) {
+//     if (v !== undefined && v !== null) url.searchParams.set(k, v);
+//   }
+//   url.searchParams.set('token', API_KEY || '');
+//   const res = await fetch(url.toString(), { cache: 'no-store' });
+//   if (!res.ok) {
+//     const txt = await res.text().catch(() => '');
+//     throw new Error(`Finnhub ${res.status}: ${txt || res.statusText}`);
+//   }
+//   return res.json();
+// }
+
+// lib/fetchJSON.js
 import 'server-only';
 
-const API_KEY = process.env.FINNHUB_API_KEY;
 const BASE = 'https://finnhub.io/api/v1';
+const KEY = process.env.FINNHUB_API_KEY;
 
-if (!API_KEY) {
-  // don’t crash prod if you prefer, but it’s helpful in dev
-  console.warn('FINNHUB_API_KEY is not set. Live market calls will fail.');
-}
+const DEFAULTS = {
+  timeoutMs: 7000,
+  retries: 1, // total tries = 1 + retries
+  ttlMs: 0, // 0 = no cache; try 10000 for 10s
+};
 
-async function fetchJSON(path, params = {}) {
+const cache = new Map(); // key -> { t, data }
+
+export async function fetchJSON(path, params = {}, opts = {}) {
+  const { timeoutMs, retries, ttlMs } = { ...DEFAULTS, retries: 2, ...opts };
+
   const url = new URL(BASE + path);
-  for (const [k, v] of Object.entries(params)) {
-    if (v !== undefined && v !== null) url.searchParams.set(k, v);
+  for (const [k, v] of Object.entries(params))
+    if (v != null) url.searchParams.set(k, v);
+  url.searchParams.set('token', KEY || '');
+  const key = url.toString();
+
+  // tiny TTL cache (optional)
+  if (ttlMs > 0) {
+    const hit = cache.get(key);
+    if (hit && Date.now() - hit.t < ttlMs) return hit.data;
   }
-  url.searchParams.set('token', API_KEY || '');
-  const res = await fetch(url.toString(), { cache: 'no-store' });
-  if (!res.ok) {
-    const txt = await res.text().catch(() => '');
-    throw new Error(`Finnhub ${res.status}: ${txt || res.statusText}`);
+
+  let attempt = 0,
+    lastErr;
+  while (attempt++ <= retries) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+      const res = await fetch(key, { cache: 'no-store', signal: ctrl.signal });
+      clearTimeout(timer);
+
+      if (!res.ok) {
+        if (res.status === 429 || (res.status >= 500 && res.status <= 599)) {
+          const ra = res.headers.get('Retry-After');
+          const waitMs = ra
+            ? Math.min(15000, (Number(ra) || 0) * 1000)
+            : 250 * attempt;
+          lastErr = new Error(`Finnhub ${res.status}`);
+          await new Promise((r) => setTimeout(r, waitMs));
+          continue;
+        }
+        const txt = await res.text().catch(() => '');
+        throw new Error(`Finnhub ${res.status}: ${txt || res.statusText}`);
+      }
+
+      const data = await res.json();
+      if (ttlMs > 0) cache.set(key, { t: Date.now(), data });
+      return data;
+    } catch (e) {
+      clearTimeout(timer);
+      lastErr = e;
+      // brief backoff before next try
+      await new Promise((r) => setTimeout(r, 200 * attempt));
+    }
   }
-  return res.json();
+  throw lastErr || new Error('fetch failed');
 }
+
+// --------------------------functions-----------------------------
 
 /** Quote: price + delta */
 export async function getQuote(symbol) {
@@ -178,7 +247,11 @@ export async function getSectors() {
   const results = await Promise.all(
     SECTORS.map(async ([symbol, name]) => {
       try {
-        const q = await fetchJSON('/quote', { symbol });
+        const q = await fetchJSON(
+          '/quote',
+          { symbol: sym },
+          { retries: 3, timeoutMs: 8000 }
+        );
         return {
           group: 'Sectors',
           symbol,

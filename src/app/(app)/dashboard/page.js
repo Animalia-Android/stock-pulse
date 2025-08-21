@@ -10,8 +10,6 @@ export default async function Page() {
 
   const indices = summary?.indices ?? [];
 
-  console.log('Indices:', indices);
-
   const news = (summary?.news ?? []).map((n) => n.headline);
 
   return (

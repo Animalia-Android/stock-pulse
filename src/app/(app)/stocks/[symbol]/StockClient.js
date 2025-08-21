@@ -185,7 +185,7 @@ export default function StockPageClient({ symbol, initialData }) {
             })}
           </div>
         </div>
-        <StockChart symbol={symbol} range={range} />
+        {/* <StockChart symbol={symbol} range={range} /> */}
       </section>
 
       {/* FUNDAMENTALS */}

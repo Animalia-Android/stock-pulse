@@ -21,15 +21,6 @@ export default function DashboardClient({
   alerts,
   news,
 }) {
-  console.log('DashboardClient', {
-    marketSummary,
-    indices,
-    watchlist,
-    movers,
-    upcomingEarnings,
-    alerts,
-    news,
-  });
   return (
     <>
       <PortfolioSummary

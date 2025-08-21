@@ -3,7 +3,6 @@
 import { useEffect, useMemo } from 'react';
 
 import { usePaperStore } from '@/stores/paperStore';
-
 import { formatUSD } from '@/lib/utils/converters/numbers';
 import OrderTicket from '@/components/paper/orderTicket';
 import { useBatchQuotes } from '@/lib/market/queries';
