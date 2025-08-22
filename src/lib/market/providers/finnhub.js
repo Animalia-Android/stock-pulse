@@ -7,7 +7,6 @@
 
 // if (!API_KEY) {
 //   // don’t crash prod if you prefer, but it’s helpful in dev
-//   console.warn('FINNHUB_API_KEY is not set. Live market calls will fail.');
 // }
 
 // async function fetchJSON(path, params = {}) {
